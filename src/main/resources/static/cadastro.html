@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro — Mariah Store</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="login-page">
+  <div class="login-container">
+    <a href="login.html" class="back-link">← Voltar para login</a>
+    
+    <div class="login-box">
+      <h2>Crie sua conta</h2>
+      
+      <form id="signup-form">
+        <div class="input-group">
+          <label for="fullname">Nome completo</label>
+          <input type="text" id="fullname" required />
+        </div>
+        <div class="input-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" required />
+        </div>
+        <div class="input-group">
+          <label for="signup-password">Senha</label>
+          <input type="password" id="signup-password" required minlength="6" />
+        </div>
+        <div class="input-group">
+          <label for="confirm-password">Confirmar senha</label>
+          <input type="password" id="confirm-password" required minlength="6" />
+        </div>
+        <button type="submit" class="btn-login">Criar conta</button>
+      </form>
+      
+      <p class="signup-link">
+        Já tem conta? <a href="login.html">Faça login</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('signup-form');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const fullname = document.getElementById('fullname').value.trim();
+          const email = document.getElementById('email').value.trim();
+          const password = document.getElementById('signup-password').value;
+          const confirmPassword = document.getElementById('confirm-password').value;
+
+          // Validações simples
+          if (!fullname || !email || !password) {
+            alert('⚠ Por favor, preencha todos os campos.');
+            return;
+          }
+
+          if (password !== confirmPassword) {
+            alert('⚠ As senhas não coincidem.');
+            return;
+          }
+
+          if (password.length < 6) {
+            alert('⚠ A senha deve ter pelo menos 6 caracteres.');
+            return;
+          }
+
+          // Simula cadastro bem-sucedido
+          localStorage.setItem('loggedInUser', fullname);
+          alert('✅ Conta criada com sucesso! Bem-vindo(a), ' + fullname + '!');
+          window.location.href = 'index.html';
+        });
+      }
+    });
+  </script>
+</body>
+</html>
