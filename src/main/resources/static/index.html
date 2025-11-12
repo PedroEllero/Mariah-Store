@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mariah Store — Loja de Roupas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Botão de login no canto superior direito -->
+  <a href="login.html" class="login-trigger-btn">Entrar</a>
+
+  <header class="header">
+    <h1>Mariah Store</h1>
+    <p>Elegância, atitude e propósito em cada peça.</p>
+  </header>
+
+  <section class="products-section">
+    <h2 class="section-title">Vestidos</h2>
+    <div class="products-grid">
+      <div class="product-card">
+        <img src="https://via.placeholder.com/300x400/0a0a0a/e91e63?text=Vestido+01" alt="Vestido Floral">
+        <h3>Vestido Floral Midi</h3>
+        <p class="price">R$ 189,90</p>
+        <button class="btn-view">Ver detalhes</button>
+      </div>
+      <div class="product-card">
+        <img src="https://via.placeholder.com/300x400/ff4081/0a0a0a?text=Vestido+02" alt="Vestido Preto">
+        <h3>Vestido Preto Elegante</h3>
+        <p class="price">R$ 229,90</p>
+        <button class="btn-view">Ver detalhes</button>
+      </div>
+      <div class="product-card">
+        <img src="https://via.placeholder.com/300x400/0a0a0a/ffffff?text=Vestido+03" alt="Vestido Listrado">
+        <h3>Vestido Listrado Casual</h3>
+        <p class="price">R$ 159,90</p>
+        <button class="btn-view">Ver detalhes</button>
+      </div>
+    </div>
+
+    <h2 class="section-title">Saias</h2>
+    <div class="products-grid">
+      <div class="product-card">
+        <img src="https://via.placeholder.com/300x400/e91e63/ffffff?text=Saia+01" alt="Saia Midi">
+        <h3>Saia Midi em Cetim</h3>
+        <p class="price">R$ 129,90</p>
+        <button class="btn-view">Ver detalhes</button>
+      </div>
+      <div class="product-card">
+        <img src="https://via.placeholder.com/300x400/0a0a0a/e91e63?text=Saia+02" alt="Saia Jeans">
+        <h3>Saia Jeans com Fenda</h3>
+        <p class="price">R$ 109,90</p>
+        <button class="btn-view">Ver detalhes</button>
+      </div>
+      <div class="product-card">
+        <img src="https://via.placeholder.com/300x400/ff4081/0a0a0a?text=Saia+03" alt="Saia Lápis">
+        <h3>Saia Lápis Preta</h3>
+        <p class="price">R$ 119,90</p>
+        <button class="btn-view">Ver detalhes</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2025 Mariah Store — Moda com impacto social.</p>
+  </footer>
+
+  <script>
+    // Apenas para o botão "Ver detalhes" (opcional)
+    document.querySelectorAll('.btn-view').forEach(btn => {
+      btn.addEventListener('click', () => {
+        alert('Detalhes do produto em breve!');
+      });
+    });
+  </script>
+</body>
+</html>
