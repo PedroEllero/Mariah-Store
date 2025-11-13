@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Vendas - Mariah Store</title>
+</head>
+<body>
+<h1>Lista de Vendas</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Data</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="venda : ${vendas}">
+        <td th:text="${venda.id}"></td>
+        <td th:text="${venda.cliente.nome}"></td>
+        <td th:text="${#temporals.format(venda.data, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${venda.total}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/vendas/form}">Nova Venda</a>
+</body>
+</html>
