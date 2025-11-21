@@ -1,62 +1,53 @@
 package com.mariah.mariah_store.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 
 @Entity
 public class VendaItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_VendaItem;
+     @Column(name = "VendaItem", nullable = false)
+    private LocalDateTime data;
+    private Long idCliente;
+    private Double valorTotal;
 
-    @ManyToOne(optional = false)
-    private Produto produto;
-
-    private Integer quantidade;
-    private Double precoUnitario;
-
-    @ManyToOne
-    private Venda venda;
-
-    // 🔹 Getters e Setters
-
-    public Long getId() {
-        return id;
+    public Long getIdVendaItem() {
+        return id_VendaItem;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setid_VendaItem(Long id_VendaItem) {
+        this.id_VendaItem = id_VendaItem;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public LocalDateTime getData() {
+        return data;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setData(LocalDateTime data) {
+        this.data = data;
     }
 
-    public Integer getQuantidade() {
-        return quantidade;
+    public Long getIdCliente() {
+        return idCliente;
     }
 
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
+    public void setIdCliente(Long idCliente) {
+        this.idCliente = idCliente;
     }
 
-    public Double getPrecoUnitario() {
-        return precoUnitario;
+    public Double getValorTotal() {
+        return valorTotal;
     }
 
-    public void setPrecoUnitario(Double precoUnitario) {
-        this.precoUnitario = precoUnitario;
-    }
-
-    public Venda getVenda() {
-        return venda;
-    }
-
-    public void setVenda(Venda venda) {
-        this.venda = venda;
+    public void setValorTotal(Double valorTotal) {
+        this.valorTotal = valorTotal;
     }
 }
