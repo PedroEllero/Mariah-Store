@@ -7,9 +7,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 
 @Entity
-public class Cliente {
+public class ClienteModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_Cliente;
@@ -18,6 +19,12 @@ public class Cliente {
     private String telefone;
      @Column(name = "data_cadastro", nullable = false)
     private LocalDateTime dataCadastro;
+    
+    @PrePersist
+protected void onCreate() {
+    this.dataCadastro = LocalDateTime.now();
+}
+
 
     public Long getid_Cliente() {
         return id_Cliente;
