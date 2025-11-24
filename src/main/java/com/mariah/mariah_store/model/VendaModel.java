@@ -7,31 +7,38 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 
 
 @Entity
 public class VendaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_Venda;
-     @Column(name = "Venda", nullable = false)
+    private Long idVenda;
+     @Column(name = "venda", nullable = false)
     private LocalDateTime data;
     private Long idCliente;
     private Double valorTotal;
+    
+    @PrePersist
+public void prePersist() {
+    data = LocalDateTime.now();
+}
 
-       public Long getid_Venda() {
-        return id_Venda;
+
+       public Long getidVenda() {
+        return idVenda;
     }
 
-    public void setid_Venda(Long id_Venda) {
-        this.id_Venda = id_Venda;
+    public void setidVenda(Long idVenda) {
+        this.idVenda = idVenda;
     }
 
-    public Long getidcliente() {
+    public Long getidCliente() {
         return idCliente;
     }
 
-    public void setClienteId(Long idCliente) {
+    public void setidCliente(Long idCliente) {
         this.idCliente = idCliente;
     }
 
@@ -41,5 +48,13 @@ public class VendaModel {
 
     public void setValorTotal(Double valorTotal) {
         this.valorTotal = valorTotal;
+    }
+
+    public LocalDateTime getData() {
+        return data;
+    }
+
+    public void setData(LocalDateTime data) {
+        this.data = data;
     }
 }

@@ -10,17 +10,17 @@ import jakarta.persistence.Id;
 public class FornecedorModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_Fornecedor;
+    private Long idFornecedor;
     private String nome;
     private String cnpj;
     private String telefone;
 
-     public Long id_Fornecedor() {
-        return id_Fornecedor;
+     public Long getIdFornecedor() {
+        return idFornecedor;
     }
 
-    public void id_Fornecedor(Long id_Fornecedor) {
-        this.id_Fornecedor = id_Fornecedor;
+    public void setIdFornecedor(Long idFornecedor) {
+        this.idFornecedor = idFornecedor;
     }
 
     public String getNome() {
@@ -37,5 +37,13 @@ public class FornecedorModel {
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 }

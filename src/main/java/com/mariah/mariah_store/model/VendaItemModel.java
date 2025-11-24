@@ -7,24 +7,30 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 
 
 @Entity
 public class VendaItemModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_VendaItem;
-     @Column(name = "VendaItem", nullable = false)
+    private Long idVendaItem;
+     @Column(name = "vendaItem", nullable = false)
     private LocalDateTime data;
     private Long idCliente;
     private Double valorTotal;
 
+        @PrePersist
+public void prePersist() {
+    data = LocalDateTime.now();
+}
+
     public Long getIdVendaItem() {
-        return id_VendaItem;
+        return idVendaItem;
     }
 
-    public void setid_VendaItem(Long id_VendaItem) {
-        this.id_VendaItem = id_VendaItem;
+    public void setIdVendaItem(Long idVendaItem) {
+        this.idVendaItem = idVendaItem;
     }
 
     public LocalDateTime getData() {
