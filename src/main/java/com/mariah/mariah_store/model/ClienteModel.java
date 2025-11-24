@@ -13,25 +13,25 @@ import jakarta.persistence.PrePersist;
 public class ClienteModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_Cliente;
+    private Long idCliente;
     private String nome;
     private String email;
     private String telefone;
-     @Column(name = "data_cadastro", nullable = false)
+     @Column(name = "dataCadastro", nullable = false)
     private LocalDateTime dataCadastro;
     
     @PrePersist
-protected void onCreate() {
+protected void prePersist() {
     this.dataCadastro = LocalDateTime.now();
 }
 
 
-    public Long getid_Cliente() {
-        return id_Cliente;
+    public Long getIdCliente() {
+        return idCliente;
     }
 
-    public void setid_Cliente(Long id_Cliente) {
-        this.id_Cliente = id_Cliente;
+    public void setIdCliente(Long idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getNome() {
@@ -56,5 +56,13 @@ protected void onCreate() {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public LocalDateTime getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(LocalDateTime dataCadastro) {
+        this.dataCadastro = dataCadastro;
     }
 }

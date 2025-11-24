@@ -10,18 +10,18 @@ import jakarta.persistence.Id;
 public class ProdutoModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_Produto;
+    private Long idProduto;
     private String nome;
     private Double preco;
     private Integer estoque;
     private Long idFornecedor;
 
-     public Long getid_Produto() {
-        return id_Produto;
+     public Long getIdProduto() {
+        return idProduto;
     }
 
-    public void setid_Produto(Long id_Produto) {
-        this.id_Produto = id_Produto;
+    public void setIdProduto(Long idProduto) {
+        this.idProduto = idProduto;
     }
 
     public String getNome() {
@@ -46,5 +46,13 @@ public class ProdutoModel {
 
     public void setEstoque(Integer estoque) {
         this.estoque = estoque;
+    }
+
+    public Long getIdFornecedor() {
+        return idFornecedor;
+    }
+
+    public void setIdFornecedor(Long idFornecedor) {
+        this.idFornecedor = idFornecedor;
     }
 }
