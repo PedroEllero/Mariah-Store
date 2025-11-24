@@ -1,37 +1,27 @@
 package com.mariah.mariah_store.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 
 @Entity
 public class Produto {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank
+    private Long id_Produto;
     private String nome;
-
-    private String descricao;
-
-    @NotNull
     private Double preco;
+    private Integer estoque;
+    private Long idFornecedor;
 
-    @NotNull
-    private Integer quantidade; // Estoque atual
-
-    @ManyToOne
-    private Fornecedor fornecedor;
-
-    // ====== Getters e Setters ======
-
-    public Long getId() {
-        return id;
+     public Long getid_Produto() {
+        return id_Produto;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setid_Produto(Long id_Produto) {
+        this.id_Produto = id_Produto;
     }
 
     public String getNome() {
@@ -42,14 +32,6 @@ public class Produto {
         this.nome = nome;
     }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
     public Double getPreco() {
         return preco;
     }
@@ -58,19 +40,11 @@ public class Produto {
         this.preco = preco;
     }
 
-    public Integer getQuantidade() {
-        return quantidade;
+    public Integer getEstoque() {
+        return estoque;
     }
 
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public Fornecedor getFornecedor() {
-        return fornecedor;
-    }
-
-    public void setFornecedor(Fornecedor fornecedor) {
-        this.fornecedor = fornecedor;
+    public void setEstoque(Integer estoque) {
+        this.estoque = estoque;
     }
 }
