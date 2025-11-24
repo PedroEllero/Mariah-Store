@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 
 
 @Entity
-public class Venda {
+public class VendaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_Venda;

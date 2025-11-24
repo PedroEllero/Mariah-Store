@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 
 
 @Entity
-public class Fornecedor {
+public class FornecedorModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_Fornecedor;
