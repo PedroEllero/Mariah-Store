@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Élan Mode — Loja de Roupas</title>
+  <title> MARIAH-STORE— Loja de Roupas</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- Botão de login/perfil -->
   <div id="auth-button" class="auth-container">
     <a href="login.html" id="auth-link" class="login-trigger-btn">Entrar</a>
 
@@ -19,7 +17,7 @@
     </div>
   </div>
 
-  <!-- Botão de carrinho -->
+  
   <div id="cart-button">
     <a href="carrinho.html" class="cart-btn">
       🛒 <span id="cart-count">0</span>
@@ -27,13 +25,13 @@
   </div>
 
   <header class="header">
-    <h1>Élan Mode</h1>
+    <h1>MARIAH-STORE</h1>
     <p>Elegância, atitude e propósito em cada peça.</p>
   </header>
 
   <div class="main-container">
 
-    <!-- BARRA DE BUSCA + FILTRO DE CATEGORIA -->
+   
     <div class="search-filters">
       <div class="search-box">
         <input type="text" id="search-input" placeholder="Buscar por nome ou estilo..." />
@@ -48,19 +46,17 @@
       </select>
     </div>
 
-    <!-- GRID DE PRODUTOS -->
+  
     <div id="products-container" class="products-grid"></div>
 
   </div>
 
   <footer class="footer">
-    <p>&copy; 2025 Élan Mode — Moda com impacto social.</p>
+    <p>&copy; 2025 MARIAH-STORE — Moda com impacto social.</p>
   </footer>
 
 <script>
-// =====================================================
-// CARRINHO
-// =====================================================
+
 function atualizarContadorCarrinho() {
   var carrinho = localStorage.getItem("carrinho");
   var contador = document.getElementById("cart-count");
@@ -74,9 +70,7 @@ function atualizarContadorCarrinho() {
 }
 
 
-// =====================================================
-// LOGIN / PERFIL
-// =====================================================
+
 function updateAuthAndCartButton() {
   var user = localStorage.getItem("loggedInUser");
   var authLink = document.getElementById("auth-link");
@@ -98,9 +92,7 @@ function updateAuthAndCartButton() {
 }
 
 
-// =====================================================
-// MENU DROPDOWN DO PERFIL
-// =====================================================
+
 function setupAuthMenu() {
   var authLink = document.getElementById("auth-link");
   var authMenu = document.getElementById("auth-menu");
@@ -127,9 +119,7 @@ function setupAuthMenu() {
 }
 
 
-// =====================================================
-// INTEGRAÇÃO COM BACKEND — LISTAR PRODUTOS
-// =====================================================
+
 const API_PRODUTOS = "http://localhost:8080/produtos";
 
 function formatarMoeda(valor) {
@@ -167,9 +157,7 @@ async function carregarProdutos() {
 }
 
 
-// =====================================================
-// FILTRO DE CATEGORIAS
-// =====================================================
+
 document.getElementById("category-filter").addEventListener("change", function () {
   let categoria = this.value;
   let cards = document.querySelectorAll(".product-card");
@@ -187,9 +175,7 @@ document.getElementById("category-filter").addEventListener("change", function (
 });
 
 
-// =====================================================
-// BUSCA POR NOME
-// =====================================================
+
 document.getElementById("search-input").addEventListener("input", function () {
   let termo = this.value.toLowerCase();
   let cards = document.querySelectorAll(".product-card");
@@ -201,9 +187,7 @@ document.getElementById("search-input").addEventListener("input", function () {
 });
 
 
-// =====================================================
-// INICIALIZAÇÃO DA PÁGINA
-// =====================================================
+
 window.onload = function () {
   updateAuthAndCartButton();
   setupAuthMenu();
