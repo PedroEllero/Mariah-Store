@@ -11,6 +11,8 @@
 <div class="main-container">
 
   <h1>Gerenciar Fornecedores</h1>
+  <div id="msg" class="msg-box" style="margin: 10px 0; display:none;"></div>
+
 
   <a href="admin.html" class="btn-view" style="margin-bottom:20px; display:inline-block;">
     ← Voltar ao Painel
@@ -133,14 +135,56 @@ async function editarFornecedor(id) {
 
 // ================ DELETAR ================
 async function deletarFornecedor(id) {
-    if (!confirm("Deseja excluir este fornecedor?")) return;
 
-    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+  if (!confirm("Deseja realmente excluir este fornecedor?")) return;
+
+  try {
+    const resp = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE"
+    });
+
+    if (!resp.ok) {
+      const erro = await resp.json();
+      mostrarMensagem(erro.message || "Não foi possível excluir o fornecedor.", "erro");
+      return;
+    }
+
+    mostrarMensagem("Fornecedor removido com sucesso!", "sucesso");
     carregarFornecedores();
+
+  } catch (e) {
+    mostrarMensagem("Erro ao conectar ao servidor.", "erro");
+    console.error(e);
+  }
 }
 
 // ================ INICIALIZAÇÃO ================
 carregarFornecedores();
+
+function mostrarMensagem(texto, tipo = "erro") {
+  const box = document.getElementById("msg");
+  box.textContent = texto;
+
+  box.style.display = "block";
+  box.style.padding = "12px";
+  box.style.borderRadius = "8px";
+  box.style.fontWeight = "600";
+
+  if (tipo === "sucesso") {
+    box.style.background = "#e0ffe5";
+    box.style.color = "#2d8a42";
+    box.style.border = "1px solid #2d8a42";
+  } else {
+    box.style.background = "#ffe0e0";
+    box.style.color = "#a12b2b";
+    box.style.border = "1px solid #a12b2b";
+  }
+
+  setTimeout(() => {
+    box.style.display = "none";
+  }, 3500);
+}
+
 </script>
 
 </body>

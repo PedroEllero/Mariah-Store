@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Vendas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main-container">
+
+  <h1>Gerenciar Vendas</h1>
+
+  <a href="admin.html" class="btn-view" style="margin-bottom:20px; display:inline-block;">
+    ← Voltar ao Painel
+  </a>
+
+  <div id="msg" class="msg-box" style="margin: 10px 0; display:none;"></div>
+
+  <h2 style="margin-top:20px;">Vendas Realizadas</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Data</th>
+        <th>Total</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaVendas"></tbody>
+  </table>
+
+  <!-- Modal de Detalhes -->
+  <div id="modal" class="modal" style="
+    display:none; 
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    
+    <div style="
+      background:white; padding:20px; border-radius:12px; 
+      width: 90%; max-width: 500px; box-shadow:0 4px 18px rgba(0,0,0,0.15);">
+      
+      <h2>Detalhes da Venda</h2>
+      <div id="modal-conteudo" style="margin-top:15px;"></div>
+
+      <button onclick="fecharModal()" 
+              class="btn-primary" 
+              style="margin-top:20px; background:#e91e63; width:100%;">
+        Fechar
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API_VENDAS = "http://localhost:8080/vendas";
+
+// ================================
+// FUNÇÃO DE MENSAGENS
+// ================================
+function mostrarMensagem(texto, tipo="erro") {
+  const box = document.getElementById("msg");
+  box.textContent = texto;
+
+  box.style.display = "block";
+  box.style.padding = "12px";
+  box.style.borderRadius = "8px";
+  box.style.fontWeight = "600";
+
+  if (tipo === "sucesso") {
+    box.style.background = "#e0ffe5";
+    box.style.color = "#2d8a42";
+    box.style.border = "1px solid #2d8a42";
+  } else {
+    box.style.background = "#ffe0e0";
+    box.style.color = "#a12b2b";
+    box.style.border = "1px solid #a12b2b";
+  }
+
+  setTimeout(() => { box.style.display = "none"; }, 3500);
+}
+
+// ================================
+// CARREGAR TODAS AS VENDAS
+// ================================
+async function carregarVendas() {
+  try {
+    const resp = await fetch(API_VENDAS);
+    const dados = await resp.json();
+
+    const tabela = document.getElementById("tabelaVendas");
+    tabela.innerHTML = "";
+
+    dados.forEach(v => {
+      tabela.innerHTML += `
+        <tr>
+          <td>${v.idVenda}</td>
+          <td>${v.cliente}</td>
+          <td>${v.data}</td>
+          <td>R$ ${v.total.toFixed(2)}</td>
+          <td>
+            <button class="btn-edit" onclick="verDetalhes(${v.idVenda})">Detalhes</button>
+          </td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.error(err);
+    mostrarMensagem("Erro ao carregar vendas.", "erro");
+  }
+}
+
+// ================================
+// DETALHES DA VENDA
+// ================================
+async function verDetalhes(id) {
+  try {
+    const resp = await fetch(`${API_VENDAS}/${id}`);
+    const v = await resp.json();
+
+    let html = `
+      <p><strong>ID:</strong> ${v.idVenda}</p>
+      <p><strong>Cliente:</strong> ${v.cliente}</p>
+      <p><strong>Data:</strong> ${v.data}</p>
+
+      <h3 style="margin-top:15px;">Itens</h3>
+    `;
+
+    v.itens.forEach(item => {
+      html += `
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span>${item.produto} (Qtd: ${item.quantidade})</span>
+          <span>R$ ${item.subtotal.toFixed(2)}</span>
+        </div>
+      `;
+    });
+
+    html += `
+      <p style="margin-top:15px; font-weight:bold; color:#e91e63;">
+        Total: R$ ${v.total.toFixed(2)}
+      </p>
+    `;
+
+    document.getElementById("modal-conteudo").innerHTML = html;
+    document.getElementById("modal").style.display = "flex";
+
+  } catch (err) {
+    console.error(err);
+    mostrarMensagem("Erro ao carregar detalhes da venda.", "erro");
+  }
+}
+
+// ================================
+// FECHAR MODAL
+// ================================
+function fecharModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+// ================================
+// INICIALIZAÇÃO
+// ================================
+window.onload = () => {
+  carregarVendas();
+};
+</script>
+
+</body>
+</html>

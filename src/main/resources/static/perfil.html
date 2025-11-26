@@ -171,44 +171,74 @@ document.addEventListener('DOMContentLoaded', async function () {
     return "R$ " + reais + "," + centavos;
   }
 
-  function carregarPedidos() {
-    var pedidos = localStorage.getItem("meusPedidos");
-    var container = document.getElementById("lista-pedidos");
+  async function carregarPedidos() {
+    const userId = localStorage.getItem("loggedInUserId");
+    const container = document.getElementById("lista-pedidos");
 
-    if (!pedidos || pedidos === "[]") {
-      container.innerHTML = 
-        '<p>Você ainda não realizou nenhum pedido.</p>' +
-        '<p>Explore nossa coleção e encontre seu próximo look! 💃</p>';
-      return;
+    if (!userId) {
+        container.innerHTML = "<p>Erro: usuário não está logado.</p>";
+        return;
     }
 
-    pedidos = JSON.parse(pedidos);
-    var html = "";
+    try {
+        const resp = await fetch(`http://localhost:8080/vendas/cliente/${userId}`);
 
-    for (var i = pedidos.length - 1; i >= 0; i--) {
-      var p = pedidos[i];
-      html += '<div style="background:#f9f9f9; padding:16px; border-radius:8px; margin-bottom:16px;">';
-      html += '<div style="display:flex; justify-content:space-between; margin-bottom:12px;">';
-      html += '<strong>Pedido #' + p.id + '</strong>';
-      html += '<span>' + p.data + '</span>';
-      html += '</div>';
-      html += '<div style="margin-bottom:12px;">';
-      for (var j = 0; j < p.itens.length; j++) {
-        var item = p.itens[j];
-        html += '<div style="display:flex; justify-content:space-between; font-size:0.95rem;">';
-        html += '<span>' + item.name + ' (Tam: ' + item.size + ', Qtd: ' + item.quantity + ')</span>';
-        html += '<span>' + formatarMoeda(item.totalPrice) + '</span>';
-        html += '</div>';
-      }
-      html += '</div>';
-      html += '<div style="text-align:right; font-weight:bold; color:#e91e63;">';
-      html += 'Total: ' + formatarMoeda(p.total);
-      html += '</div>';
-      html += '</div>';
+        if (resp.status === 404) {
+            container.innerHTML = "<p>Você ainda não realizou nenhum pedido.</p>";
+            return;
+        }
+
+        if (!resp.ok) {
+            container.innerHTML = "<p>Erro ao carregar pedidos.</p>";
+            return;
+        }
+
+        const pedidos = await resp.json();
+
+        if (!pedidos || pedidos.length === 0) {
+            container.innerHTML = "<p>Você ainda não realizou nenhum pedido.</p>";
+            return;
+        }
+
+        let html = "";
+
+        pedidos.reverse().forEach(p => {
+            html += `
+                <div style="background:#f9f9f9; padding:16px; border-radius:8px; margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                        <strong>Pedido #${p.idVenda}</strong>
+                        <span>${p.data}</span>
+                    </div>
+
+                    <div style="margin-bottom:12px;">
+            `;
+
+            p.itens.forEach(item => {
+                html += `
+                    <div style="display:flex; justify-content:space-between; font-size:0.95rem; margin-bottom:6px;">
+                        <span>${item.produto} (Qtd: ${item.quantidade})</span>
+                        <span>R$ ${item.subtotal.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+
+                    <div style="text-align:right; font-weight:bold; color:#e91e63;">
+                        Total: R$ ${p.total.toFixed(2)}
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+    } catch (e) {
+        console.error(e);
+        container.innerHTML = "<p>Erro ao carregar pedidos.</p>";
     }
-
-    container.innerHTML = html;
-  }
+}
 
   carregarPedidos();
 

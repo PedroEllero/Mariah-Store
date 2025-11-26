@@ -51,4 +51,9 @@ public class VendaController {
     public VendaResponseDTO buscarPorId(@PathVariable Long id) {
         return vendaService.buscarPorId(id);
     }
+    @GetMapping("/cliente/{clienteId}")
+public List<VendaResponseDTO> listarPorCliente(@PathVariable Long clienteId) {
+    return vendaService.listarVendasPorCliente(clienteId);
+}
+
 }

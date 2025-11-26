@@ -5,55 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Élan Mode — Painel Administrativo</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Layout admin */
-    .admin-container {
-      display: flex;
-      min-height: 100vh;
-    }
 
-    .admin-sidebar {
-      width: 260px;
-      background: var(--black);
-      color: white;
-      padding: 30px 20px;
-    }
-
-    .admin-sidebar h2 {
-      color: var(--pink-light);
-      margin-bottom: 20px;
-    }
-
-    .admin-sidebar a {
-      display: block;
-      padding: 12px 10px;
-      margin: 6px 0;
-      text-decoration: none;
-      color: #ccc;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-
-    .admin-sidebar a:hover,
-    .admin-sidebar a.active {
-      background: var(--pink);
-      color: white;
-    }
-
-    .admin-content {
-      flex: 1;
-      padding: 30px;
-      background: var(--light-bg);
-    }
-
-    .admin-section {
-      display: none;
-    }
-
-    .admin-section.active {
-      display: block;
-    }
-  </style>
 </head>
 <body>
 
@@ -106,11 +58,16 @@
       </a>
     </div>
 
-    <!-- VENDAS -->
-    <div id="vendas" class="admin-section">
-      <h1>Vendas</h1>
-      <p>Em breve: listagem de vendas com itens, clientes e totals.</p>
-    </div>
+  <!-- VENDAS -->
+  <div id="vendas" class="admin-section">
+    <h1>Gerenciar Vendas</h1>
+    <p>Acompanhe as vendas realizadas na loja.</p>
+
+    <a href="admin-vendas.html" class="btn-primary" style="margin-top:20px; display:inline-block;">
+      📄 Ver lista de vendas
+    </a>
+  </div>
+
 
   </div>
 

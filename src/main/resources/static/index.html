@@ -152,7 +152,7 @@ async function carregarProdutos() {
           <img src="${p.imagem}" alt="${p.nome}">
           <h3>${p.nome}</h3>
           <p class="price">${formatarMoeda(p.preco)}</p>
-          <p class="short-desc">${p.descricaoCurta || ""}</p>
+          <p class="short-desc">${p.descricao || ""}</p>
           <a href="produto.html?id=${p.idProduto}" class="btn-view">Ver Produto</a>
         </div>
       `;
