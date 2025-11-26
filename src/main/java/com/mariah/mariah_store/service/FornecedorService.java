@@ -9,14 +9,19 @@ import com.mariah.mariah_store.exception.BadRequestException;
 import com.mariah.mariah_store.exception.ResourceNotFoundException;
 import com.mariah.mariah_store.model.FornecedorModel;
 import com.mariah.mariah_store.repository.FornecedorRepository;
+import com.mariah.mariah_store.repository.ProdutoRepository;
 
 @Service
 public class FornecedorService {
 
     private final FornecedorRepository fornecedorRepository;
+    private final ProdutoRepository produtoRepository;
 
-    public FornecedorService(FornecedorRepository fornecedorRepository) {
+    
+
+    public FornecedorService(FornecedorRepository fornecedorRepository, ProdutoRepository produtoRepository) {
         this.fornecedorRepository = fornecedorRepository;
+        this.produtoRepository = produtoRepository;
     }
 
     public List<FornecedorModel> listarTodos() {
@@ -64,11 +69,24 @@ public class FornecedorService {
         return fornecedorRepository.save(existente);
     }
 
-    public void deletar(Long id) {
-        boolean exists = fornecedorRepository.existsById(id);
-        if (!exists) {
-            throw new ResourceNotFoundException("Fornecedor com id " + id + " não encontrado.");
-        }
-        fornecedorRepository.deleteById(id);
+public void deletar(Long id) {
+
+    boolean existe = fornecedorRepository.existsById(id);
+    if (!existe) {
+        throw new ResourceNotFoundException("Fornecedor com ID " + id + " não encontrado.");
     }
+
+    long produtosVinculados = produtoRepository.countByFornecedor_IdFornecedor(id);
+
+
+    if (produtosVinculados > 0) {
+        throw new BadRequestException(
+            "Este fornecedor não pode ser removido pois possui produtos cadastrados."
+        );
+    }
+
+    fornecedorRepository.deleteById(id);
+}
+
+
 }

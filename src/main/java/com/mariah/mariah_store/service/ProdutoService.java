@@ -112,12 +112,13 @@ public class ProdutoService {
     }
 
     public void deletar(Long id) {
-        boolean exists = produtoRepository.existsById(id);
-
-        if (!exists) {
-            throw new ResourceNotFoundException("Produto com id " + id + " não encontrado.");
+        try {
+            produtoRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new BadRequestException(
+                "Este produto não pode ser removido pois já foi utilizado em vendas."
+            );
         }
-
-        produtoRepository.deleteById(id);
     }
+
 }

@@ -5,6 +5,12 @@ public class VendaItemResponseDTO {
     private String produto;
     private Integer quantidade;
     private Double subtotal;
+    
+        public VendaItemResponseDTO(String produto, Integer quantidade, Double subtotal) {
+        this.produto = produto;
+        this.quantidade = quantidade;
+        this.subtotal = subtotal;
+    }
 
     // GETTERS E SETTERS
     public String getProduto() {

@@ -18,137 +18,142 @@ import com.mariah.mariah_store.model.VendaItemModel;
 import com.mariah.mariah_store.model.VendaModel;
 import com.mariah.mariah_store.repository.ClienteRepository;
 import com.mariah.mariah_store.repository.ProdutoRepository;
+import com.mariah.mariah_store.repository.VendaItemRepository;
 import com.mariah.mariah_store.repository.VendaRepository;
 
 @Service
 public class VendaService {
 
     private final VendaRepository vendaRepository;
+    private final VendaItemRepository vendaItemRepository;
     private final ClienteRepository clienteRepository;
     private final ProdutoRepository produtoRepository;
 
     public VendaService(
             VendaRepository vendaRepository,
+            VendaItemRepository vendaItemRepository,
             ClienteRepository clienteRepository,
             ProdutoRepository produtoRepository) {
 
         this.vendaRepository = vendaRepository;
+        this.vendaItemRepository = vendaItemRepository;
         this.clienteRepository = clienteRepository;
         this.produtoRepository = produtoRepository;
     }
 
-    // ===============================
-    // REGISTRA UMA VENDA COMPLETA
-    // ===============================
+    // ============================================
+    // REGISTRAR VENDA
+    // ============================================
     public VendaResponseDTO registrarVenda(VendaRequestDTO dto) {
 
-        // 1. VALIDAR CLIENTE
         ClienteModel cliente = clienteRepository.findById(dto.getClienteId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Cliente com ID " + dto.getClienteId() + " não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado."));
 
-        // 2. VALIDAR ITENS
         if (dto.getItens() == null || dto.getItens().isEmpty()) {
             throw new BadRequestException("A venda deve conter ao menos um item.");
         }
 
-        // 3. CRIAR VENDA (a data é setada pelo @PrePersist)
         VendaModel venda = new VendaModel();
         venda.setCliente(cliente);
 
         List<VendaItemModel> itensModel = new ArrayList<>();
+        double total = 0;
 
-        double totalVenda = 0;
+        for (VendaItemRequestDTO item : dto.getItens()) {
 
-        // 4. PROCESSAR CADA ITEM
-        for (VendaItemRequestDTO itemDTO : dto.getItens()) {
+            ProdutoModel produto = produtoRepository.findById(item.getProdutoId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
 
-            ProdutoModel produto = produtoRepository.findById(itemDTO.getProdutoId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Produto com ID " + itemDTO.getProdutoId() + " não encontrado."));
-
-            if (itemDTO.getQuantidade() <= 0) {
-                throw new BadRequestException("Quantidade inválida para o produto " + produto.getNome());
+            if (item.getQuantidade() <= 0) {
+                throw new BadRequestException("Quantidade inválida.");
             }
 
-            double precoUnitario = produto.getPreco();
-            double subtotal = precoUnitario * itemDTO.getQuantidade();
+            double preco = produto.getPreco();
+            double subtotal = preco * item.getQuantidade();
 
-            totalVenda += subtotal;
+            VendaItemModel vi = new VendaItemModel();
+            vi.setProduto(produto);
+            vi.setQuantidade(item.getQuantidade());
+            vi.setPrecoUnitario(preco);
+            vi.setSubtotal(subtotal);
+            vi.setVenda(venda);
 
-            VendaItemModel item = new VendaItemModel();
-            item.setProduto(produto);
-            item.setQuantidade(itemDTO.getQuantidade());
-            item.setPrecoUnitario(precoUnitario);
-            item.setSubtotal(subtotal);
-            item.setVenda(venda);
-
-            itensModel.add(item);
+            total += subtotal;
+            itensModel.add(vi);
         }
 
-        // 5. FINALIZAR VENDA
+        venda.setTotal(total);
         venda.setItens(itensModel);
-        venda.setTotal(totalVenda);
 
-        // 6. SALVAR NO BANCO
-        VendaModel vendaSalva = vendaRepository.save(venda);
+        VendaModel salvo = vendaRepository.save(venda);
 
-        // 7. CONVERTER PARA RESPONSE DTO
-        return converterParaResponse(vendaSalva);
+        return converterParaResponse(salvo);
     }
 
-    // ===============================
-    // CONVERTE VENDA PARA RESPONSE DTO
-    // ===============================
+    public VendaResponseDTO buscarPorId(Long id) {
+    VendaModel venda = vendaRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                    "Venda com ID " + id + " não encontrada."));
+
+    return converterParaResponse(venda);
+}
+
+
+    // ============================================
+    // CONVERTER PARA RESPONSE
+    // ============================================
     private VendaResponseDTO converterParaResponse(VendaModel venda) {
 
         VendaResponseDTO dto = new VendaResponseDTO();
         dto.setIdVenda(venda.getIdVenda());
-        dto.setTotal(venda.getTotal());
         dto.setCliente(venda.getCliente().getNome());
+        dto.setTotal(venda.getTotal());
 
-        String dataFormatada = venda.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-        dto.setData(dataFormatada);
+        String data = venda.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        dto.setData(data);
 
-        // itens
         List<VendaItemResponseDTO> itensDTO = new ArrayList<>();
 
-        for (VendaItemModel item : venda.getItens()) {
-            VendaItemResponseDTO itemDTO = new VendaItemResponseDTO();
-            itemDTO.setProduto(item.getProduto().getNome());
-            itemDTO.setQuantidade(item.getQuantidade());
-            itemDTO.setSubtotal(item.getSubtotal());
+        for (VendaItemModel i : venda.getItens()) {
+            VendaItemResponseDTO itemDTO = new VendaItemResponseDTO(
+                    i.getProduto().getNome(),
+                    i.getQuantidade(),
+                    i.getSubtotal()
+            );
             itensDTO.add(itemDTO);
         }
 
         dto.setItens(itensDTO);
-
         return dto;
     }
 
-    // ===============================
-    // LISTAR TODAS AS VENDAS
-    // ===============================
-    public List<VendaResponseDTO> listarVendas() {
+    // ============================================
+    // LISTAR VENDAS DO CLIENTE
+    // ============================================
+    public List<VendaResponseDTO> listarVendasPorCliente(Long clienteId) {
 
-        List<VendaModel> vendas = vendaRepository.findAll();
+        List<VendaModel> vendas = vendaRepository.findByClienteId(clienteId);
+
         List<VendaResponseDTO> lista = new ArrayList<>();
-
-        for (VendaModel venda : vendas) {
-            lista.add(converterParaResponse(venda));
+        for (VendaModel v : vendas) {
+            lista.add(converterParaResponse(v));
         }
 
         return lista;
+
     }
 
-    // ===============================
-    // BUSCAR VENDA POR ID
-    // ===============================
-    public VendaResponseDTO buscarPorId(Long id) {
-        VendaModel venda = vendaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Venda com ID " + id + " não encontrada."));
+    public List<VendaResponseDTO> listarVendas() {
+    List<VendaModel> vendas = vendaRepository.findAll();
 
-        return converterParaResponse(venda);
+    List<VendaResponseDTO> lista = new ArrayList<>();
+
+    for (VendaModel venda : vendas) {
+        lista.add(converterParaResponse(venda));
     }
+
+    return lista;
+}
+
+
 }

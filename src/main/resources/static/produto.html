@@ -1,67 +1,79 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Produto — Élan Mode</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
+  <!-- TOAST DE NOTIFICAÇÃO -->
+  <div id="toast" class="toast"></div>
+
+  <!-- NAV SUPERIOR -->
+  <div class="top-nav">
+    <a href="index.html" class="nav-btn">← Voltar</a>
+
+    <div class="nav-right">
+      <a href="carrinho.html" class="nav-icon">🛒</a>
+      <a href="perfil.html" class="nav-icon">👤</a>
+    </div>
+  </div>
+
+  <!-- HEADER -->
   <header class="header">
     <h1>Élan Mode</h1>
     <p>Detalhes do produto</p>
   </header>
 
+  <!-- CONTEÚDO PRINCIPAL -->
   <main class="main-container">
 
-    <a href="index.html" class="btn-view" style="margin-bottom:20px; display:inline-block;">
-      ← Voltar
-    </a>
+    <div class="product-detail">
 
-    <div class="product-detail" style="display: flex; gap: 40px; flex-wrap: wrap;">
-
-
-      <div style="flex: 1 1 350px;">
-        <img id="product-img" src="imagens/default.jpg" 
-             alt="Imagem do produto" 
-             style="width:100%; border-radius:12px; box-shadow:0 4px 18px rgba(0,0,0,0.15);">
+      <!-- IMAGEM -->
+      <div class="product-image-box">
+        <img id="product-img" src="imagens/default.jpg" alt="Imagem do produto" class="product-image">
       </div>
 
+      <!-- INFORMAÇÕES -->
+      <div class="product-info-box">
 
-      <div style="flex: 1 1 350px;">
+        <h2 id="product-name" class="product-title">Carregando...</h2>
 
-        <h2 id="product-name" style="font-size:2rem; margin-bottom:10px;">Carregando...</h2>
-        <p id="product-price-unit" style="font-size:1.6rem; color: var(--pink); font-weight:700;">
-            R$ 0,00
-        </p>
+        <p id="product-price-unit" class="product-price">R$ 0,00</p>
 
-        <p id="product-description" style="margin:15px 0; color:#555;">
+        <p id="product-description" class="product-description">
           Carregando descrição...
         </p>
 
-        <div style="margin-top:25px;">
-          <h3 style="margin-bottom:10px;">Tamanho</h3>
+        <!-- TAMANHOS -->
+        <div class="product-section">
+          <h3 class="section-title">Tamanho</h3>
           <div id="sizes-container" class="sizes"></div>
           <input type="hidden" id="selected-size">
         </div>
 
-        <div style="margin-top:25px;">
-          <h3 style="margin-bottom:10px;">Quantidade</h3>
+        <!-- QUANTIDADE -->
+        <div class="product-section">
+          <h3 class="section-title">Quantidade</h3>
           <div id="quantities-container" class="quantities"></div>
           <input type="hidden" id="selected-quantity" value="1">
         </div>
 
-        <p id="product-price-total" 
-           style="margin-top:20px; font-size:1.3rem; font-weight:600;">
-           Total: R$ 0,00
+        <!-- TOTAL -->
+        <p id="product-price-total" class="product-total">
+          Total: R$ 0,00
         </p>
 
-        <button class="btn-primary" style="margin-top:20px;" onclick="comprarProduto()">Comprar</button>
-        <button class="btn-cart" id="add-cart-btn" 
-                style="margin-top:10px; background: var(--pink); color:white;"
-                onclick="adicionarAoCarrinho()">
-                Adicionar ao carrinho
+        <!-- BOTÕES -->
+        <button class="btn-primary" onclick="comprarProduto()">Comprar</button>
+
+        <button class="btn-cart" id="add-cart-btn" onclick="adicionarAoCarrinho()">
+          Adicionar ao carrinho
         </button>
 
       </div>
@@ -69,25 +81,35 @@
 
   </main>
 
+  <!-- FOOTER -->
   <footer class="footer">
     <p>&copy; 2025 Élan Mode — Moda com impacto social.</p>
   </footer>
 
-
+  <!-- SCRIPT -->
   <script>
     const API_PRODUTOS = "http://localhost:8080/produtos";
+    const tamanhos = ["PP", "P", "M", "G", "GG"];
+    const quantidades = [1, 2, 3, 4];
 
-    const tamanhos = ["PP","P","M","G","GG"];
-    const quantidades = [1,2,3,4];
+    // Toast profissional
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
 
-    function formatarMoeda(valor) {
-      return valor.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2200);
     }
 
-    async function carregarProduto() {
-      const url = new URL(window.location.href);
-      const id = parseInt(url.searchParams.get("id"));
+    function formatarMoeda(valor) {
+      return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
 
+    // Carregar produto
+    async function carregarProduto() {
+      const id = parseInt(new URLSearchParams(window.location.search).get("id"));
       if (!id) {
         document.getElementById("product-name").textContent = "Produto não encontrado";
         return;
@@ -95,7 +117,6 @@
 
       const resp = await fetch(API_PRODUTOS);
       const produtos = await resp.json();
-
       const produto = produtos.find(p => p.idProduto === id);
 
       if (!produto) {
@@ -103,15 +124,11 @@
         return;
       }
 
-      // Nome + preço
       document.getElementById("product-name").textContent = produto.nome;
       document.getElementById("product-price-unit").textContent = formatarMoeda(produto.preco);
-
-      // Descrição / imagem placeholder
       document.getElementById("product-description").textContent = produto.descricao || "Descrição não disponível.";
       document.getElementById("product-img").src = produto.imagem;
 
-      // Guardar global
       document.body.dataset.preco = produto.preco;
       document.body.dataset.idProduto = produto.idProduto;
       document.body.dataset.nomeProduto = produto.nome;
@@ -131,7 +148,7 @@
         b.className = "size-btn";
         b.onclick = () => {
           document.getElementById("selected-size").value = t;
-          document.querySelectorAll(".size-btn").forEach(x=>x.classList.remove("active"));
+          document.querySelectorAll(".size-btn").forEach(x => x.classList.remove("active"));
           b.classList.add("active");
         };
         cont.appendChild(b);
@@ -148,7 +165,7 @@
         b.className = "qty-btn";
         b.onclick = () => {
           document.getElementById("selected-quantity").value = q;
-          document.querySelectorAll(".qty-btn").forEach(x=>x.classList.remove("active"));
+          document.querySelectorAll(".qty-btn").forEach(x => x.classList.remove("active"));
           b.classList.add("active");
           atualizarTotal();
         };
@@ -160,7 +177,6 @@
       const preco = parseFloat(document.body.dataset.preco);
       const qtd = parseInt(document.getElementById("selected-quantity").value) || 1;
       const total = preco * qtd;
-
       document.getElementById("product-price-total").textContent = "Total: " + formatarMoeda(total);
     }
 
@@ -168,7 +184,10 @@
       const tam = document.getElementById("selected-size").value;
       const qtd = parseInt(document.getElementById("selected-quantity").value);
 
-      if (!tam) { alert("Selecione um tamanho."); return; }
+      if (!tam) {
+        showToast("Selecione um tamanho");
+        return;
+      }
 
       const item = {
         id: document.body.dataset.idProduto,
@@ -179,32 +198,47 @@
       };
 
       localStorage.setItem("pedidoAtual", JSON.stringify(item));
-      alert("Compra iniciada!");
+      showToast("Compra iniciada!");
     }
 
-    function adicionarAoCarrinho() {
-      const tam = document.getElementById("selected-size").value;
-      const qtd = parseInt(document.getElementById("selected-quantity").value);
+function adicionarAoCarrinho() {
+  const tamanho = document.getElementById("selected-size").value;
+  const quantidade = parseInt(document.getElementById("selected-quantity").value);
 
-      if (!tam) { alert("Selecione um tamanho."); return; }
+  if (!tamanho) {
+    showToast("Selecione um tamanho");
+    return;
+  }
 
-      const item = {
-        id: document.body.dataset.idProduto,
-        nome: document.body.dataset.nomeProduto,
-        tamanho: tam,
-        quantidade: qtd,
-        precoUnitario: parseFloat(document.body.dataset.preco)
-      };
+  const idProduto = parseInt(new URLSearchParams(window.location.search).get("id"));
+  const nomeProduto = document.getElementById("product-name").textContent;
+  const precoUnitario = parseFloat(
+    document.getElementById("product-price-unit").textContent
+      .replace("R$", "")
+      .replace(",", ".")
+      .trim()
+  );
 
-      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-      cart.push(item);
-      localStorage.setItem("cart", JSON.stringify(cart));
+  const item = {
+    id: idProduto,
+    name: nomeProduto,
+    size: tamanho,
+    quantity: quantidade,
+    unitPrice: precoUnitario,
+    totalPrice: precoUnitario * quantidade
+  };
 
-      alert("Adicionado ao carrinho!");
-    }
+  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  cart.push(item);
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  showToast("Adicionado ao carrinho!");
+}
+
 
     window.onload = carregarProduto;
   </script>
 
 </body>
+
 </html>

@@ -14,7 +14,7 @@
     <a href="admin.html" class="btn-view" style="margin-bottom:20px; display:inline-block;">
       ← Voltar ao Painel
     </a>
-
+    <div id="msg" class="msg-box" style="margin: 10px 0; display:none;"></div>
     <!-- Formulário -->
     <h2 style="margin-top:20px;">Adicionar / Editar Produto</h2>
 
@@ -53,8 +53,8 @@
       </div>
 
       <div class="input-group">
-        <label>Descrição Curta</label>
-        <input type="text" id="descricaoCurta" maxlength="120">
+        <label>Descrição</label>
+        <input type="text" id="descricao" maxlength="120">
       </div>
 
       <div class="input-group">
@@ -66,6 +66,7 @@
     </form>
 
     <h2 style="margin-top:40px;">Produtos Cadastrados</h2>
+
 
     <table>
       <thead>
@@ -149,7 +150,7 @@ async function editarProduto(id) {
   document.getElementById("estoque").value = p.estoque;
   document.getElementById("categoria").value = p.categoria;
   document.getElementById("imagem").value = p.imagem;
-  document.getElementById("descricaoCurta").value = p.descricaoCurta;
+  document.getElementById("descricao").value = p.descricao;
 
   document.getElementById("fornecedor").value = p.fornecedor.idFornecedor;
   window.scrollTo(0, 0);
@@ -161,9 +162,26 @@ async function editarProduto(id) {
 async function deletarProduto(id) {
   if (!confirm("Deseja realmente excluir este produto?")) return;
 
-  await fetch(`${API_PRODUTOS}/${id}`, { method: "DELETE" });
-  carregarProdutos();
+  try {
+    const resp = await fetch(`${API_PRODUTOS}/${id}`, {
+      method: "DELETE"
+    });
+
+    if (!resp.ok) {
+      const erro = await resp.json();
+      mostrarMensagem(erro.message || "Não foi possível excluir o produto.", "erro");
+      return;
+    }
+
+    mostrarMensagem("Produto removido com sucesso!", "sucesso");
+    carregarProdutos();
+
+  } catch (e) {
+    mostrarMensagem("Erro ao conectar ao servidor.", "erro");
+    console.error(e);
+  }
 }
+
 
 // ===================================
 // SALVAR PRODUTO (CREATE/UPDATE)
@@ -179,13 +197,13 @@ document.getElementById("produtoForm").addEventListener("submit", async function
     estoque: parseInt(document.getElementById("estoque").value),
     categoria: document.getElementById("categoria").value,
     imagem: document.getElementById("imagem").value,
-    descricaoCurta: document.getElementById("descricaoCurta").value,
+    descricao: document.getElementById("descricao").value,
     fornecedor: {
       idFornecedor: parseInt(document.getElementById("fornecedor").value)
     }
   };
 
-  const metodo = id ? "PUT" : "POST";
+  const metodo = id ? "PUT" : "POST" ;
   const url = id ? `${API_PRODUTOS}/${id}` : API_PRODUTOS;
 
   await fetch(url, {
@@ -205,6 +223,32 @@ window.onload = () => {
   carregarFornecedores();
   carregarProdutos();
 }
+
+
+function mostrarMensagem(texto, tipo = "erro") {
+  const box = document.getElementById("msg");
+  box.textContent = texto;
+
+  box.style.display = "block";
+  box.style.padding = "12px";
+  box.style.borderRadius = "8px";
+  box.style.fontWeight = "600";
+
+  if (tipo === "sucesso") {
+    box.style.background = "#e0ffe5";
+    box.style.color = "#2d8a42";
+    box.style.border = "1px solid #2d8a42";
+  } else {
+    box.style.background = "#ffe0e0";
+    box.style.color = "#a12b2b";
+    box.style.border = "1px solid #a12b2b";
+  }
+
+  setTimeout(() => {
+    box.style.display = "none";
+  }, 3500);
+}
+
 </script>
 
 </body>

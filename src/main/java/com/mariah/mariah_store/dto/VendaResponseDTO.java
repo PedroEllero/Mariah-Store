@@ -10,6 +10,7 @@ public class VendaResponseDTO {
     private String cliente;
     private List<VendaItemResponseDTO> itens;
 
+    
     // GETTERS E SETTERS
 
     public Long getIdVenda() {
