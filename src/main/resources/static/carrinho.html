@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carrinho — Élan Mode</title>
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --pink: #e91e63;
+      --pink-light: #ff4081;
+      --light-bg: #f8f8f8;
+      --white: #ffffff;
+      --border-color: #e0e0e0;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
+    body {
+      background-color: var(--light-bg);
+      color: var(--black);
+    }
+    #auth-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    #cart-button {
+      position: fixed;
+      top: 20px;
+      right: 100px;
+      z-index: 1000;
+      display: none;
+    }
+    .login-trigger-btn,
+    .profile-btn,
+    .cart-btn {
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s;
+    }
+    .login-trigger-btn {
+      background: transparent;
+      color: var(--pink);
+      border: 1px solid var(--pink);
+    }
+    .login-trigger-btn:hover {
+      background: var(--pink);
+      color: var(--white);
+    }
+    .profile-btn {
+      background: var(--black);
+      color: var(--white);
+      border: none;
+    }
+    .profile-btn:hover {
+      background: var(--pink);
+    }
+    .cart-btn {
+      background: var(--pink);
+      color: var(--white);
+      border: none;
+    }
+    .cart-btn:hover {
+      background: var(--pink-light);
+    }
+    .header {
+      background-color: var(--black);
+      color: var(--white);
+      padding: 60px 20px 40px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 2.4rem;
+      color: var(--pink-light);
+    }
+    .main-container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--pink);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .cart-items {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+    .remove-btn {
+      position: absolute;
+      right: -30px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #ff4d4d;
+      color: white;
+      width: 26px;
+      height: 26px;
+      border: none;
+      border-radius: 50%;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .remove-btn:hover {
+      background: #ff1a1a;
+    }
+    .item-info h3 {
+      margin-bottom: 6px;
+    }
+    .item-meta {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .cart-total {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: right;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--pink);
+    }
+    .btn-finalizar {
+      width: 100%;
+      padding: 16px;
+      background: var(--pink);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .btn-finalizar:hover {
+      background: var(--pink-light);
+    }
+    .empty-cart {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+    }
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: #aaa;
+      background: var(--black);
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Botões fixos no topo -->
+  <div id="auth-button">
+    <a href="login.html" id="auth-link" class="login-trigger-btn">Entrar</a>
+  </div>
+  <div id="cart-button">
+    <a href="carrinho.html" class="cart-btn">
+      🛒 <span id="cart-count">0</span>
+    </a>
+  </div>
+
+  <header class="header">
+    <h1>Élan Mode</h1>
+    <p>Seu carrinho</p>
+  </header>
+
+  <main class="main-container">
+    <a href="index.html" class="back-link">← Voltar à loja</a>
+
+    <div id="cart-content">
+      <!-- Itens serão carregados aqui -->
+    </div>
+
+    <button id="finalizar-btn" class="btn-finalizar" style="display: none;" onclick="finalizarCompra()">
+      Finalizar Compra
+    </button>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Élan Mode — Moda com impacto social.</p>
+  </footer>
+
+  <script>
+    function formatarMoeda(valor) {
+      var str = valor.toFixed(2);
+      var partes = str.split(".");
+      var reais = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      var centavos = partes[1];
+      return "R$ " + reais + "," + centavos;
+    }
+
+    function updateAuthAndCartButton() {
+      var user = localStorage.getItem("loggedInUser");
+      var authLink = document.getElementById("auth-link");
+      var cartButton = document.getElementById("cart-button");
+
+      if (user) {
+        authLink.textContent = "👤 " + user;
+        authLink.href = "perfil.html";
+        authLink.className = "profile-btn";
+        cartButton.style.display = "block";
+        atualizarContadorCarrinho();
+      } else {
+        authLink.textContent = "Entrar";
+        authLink.href = "login.html";
+        authLink.className = "login-trigger-btn";
+        cartButton.style.display = "none";
+      }
+    }
+
+    function atualizarContadorCarrinho() {
+      var cart = localStorage.getItem("cart");
+      var count = 0;
+      if (cart) {
+        cart = JSON.parse(cart);
+        var i;
+        for (i = 0; i < cart.length; i = i + 1) {
+          count += cart[i].quantity;
+        }
+      }
+      document.getElementById("cart-count").textContent = count;
+    }
+
+    function removerDoCarrinho(index) {
+      if (!confirm("Tem certeza que deseja remover este item?")) {
+        return;
+      }
+
+      var cart = localStorage.getItem("cart");
+      if (!cart) return;
+
+      cart = JSON.parse(cart);
+      cart.splice(index, 1); // Remove o item na posição "index"
+      localStorage.setItem("cart", JSON.stringify(cart));
+
+      // Recarrega a página para atualizar
+      carregarCarrinho();
+    }
+
+    function carregarCarrinho() {
+      var user = localStorage.getItem("loggedInUser");
+      var conteudo = document.getElementById("cart-content");
+      var btnFinalizar = document.getElementById("finalizar-btn");
+
+      if (!user) {
+        conteudo.innerHTML = '<div class="empty-cart"><p>Faça login para ver seu carrinho.</p></div>';
+        btnFinalizar.style.display = "none";
+        return;
+      }
+
+      var cart = localStorage.getItem("cart");
+      if (!cart || cart === "[]") {
+        conteudo.innerHTML = '<div class="empty-cart"><p>Seu carrinho está vazio.</p></div>';
+        btnFinalizar.style.display = "none";
+        return;
+      }
+
+      cart = JSON.parse(cart);
+      var html = '<div class="cart-items">';
+      var totalGeral = 0;
+      var i;
+      for (i = 0; i < cart.length; i = i + 1) {
+        var item = cart[i];
+        totalGeral += item.totalPrice;
+        html += '<div class="cart-item">';
+        html += '<div class="item-info">';
+        html += '<h3>' + item.name + '</h3>';
+        html += '<div class="item-meta">Tamanho: ' + item.size + ' | Qtd: ' + item.quantity + '</div>';
+        html += '<div>' + formatarMoeda(item.unitPrice) + ' cada</div>';
+        html += '</div>';
+        html += '<div>' + formatarMoeda(item.totalPrice) + '</div>';
+        // ✅ Botão de remover
+        html += '<button class="remove-btn" onclick="removerDoCarrinho(' + i + ')">×</button>';
+        html += '</div>';
+      }
+      html += '</div>';
+      html += '<div class="cart-total">Total: ' + formatarMoeda(totalGeral) + '</div>';
+
+      conteudo.innerHTML = html;
+      btnFinalizar.style.display = "block";
+    }
+
+    function finalizarCompra() {
+      var user = localStorage.getItem("loggedInUser");
+      if (!user) {
+        alert("Faça login para finalizar a compra.");
+        return;
+      }
+
+      var cart = localStorage.getItem("cart");
+      if (!cart || cart === "[]") {
+        alert("Seu carrinho está vazio.");
+        return;
+      }
+
+      window.location.href = "area-compra.html";
+    }
+
+    window.onload = function() {
+      updateAuthAndCartButton();
+      carregarCarrinho();
+    };
+  </script>
+</body>
+</html>

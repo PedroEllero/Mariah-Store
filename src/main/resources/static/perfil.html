@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meu Perfil — Élan Mode</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <h1>Élan Mode</h1>
+    <p>Sua conta, seus dados, seu estilo.</p>
+  </header>
+
+  <main class="main-container">
+    <div class="logout-btn-container">
+      <button id="logout-btn" class="logout-btn">Sair</button>
+    </div>
+
+    <div class="profile-tabs">
+      <button id="tab-pedidos" class="tab-btn active">Meus Pedidos</button>
+      <button id="tab-dados" class="tab-btn">Dados Pessoais</button>
+    </div>
+
+    <div id="conteudo-pedidos" class="tab-content active">
+      <h2>Meus Pedidos</h2>
+      <div id="lista-pedidos">
+        <!-- Pedidos serão carregados aqui -->
+      </div>
+    </div>
+
+    <div id="conteudo-dados" class="tab-content">
+      <h2>Dados Pessoais</h2>
+      <form id="form-dados">
+        <div class="input-group">
+          <label for="nome">Nome completo</label>
+          <input type="text" id="nome" required />
+        </div>
+        <div class="input-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" required />
+        </div>
+        <div class="input-group">
+          <label for="cpf">CPF</label>
+          <input type="text" id="cpf" placeholder="000.000.000-00" required />
+        </div>
+        <div class="input-group">
+          <label for="nascimento">Data de nascimento</label>
+          <input type="date" id="nascimento" required />
+        </div>
+        <div class="input-group">
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" placeholder="Rua, Avenida..." required />
+        </div>
+        <div class="input-group">
+          <label for="numero">Número</label>
+          <input type="text" id="numero" required />
+        </div>
+        <div class="input-group">
+          <label for="cidade">Cidade</label>
+          <input type="text" id="cidade" required />
+        </div>
+        <div class="input-group">
+          <label for="estado">Estado</label>
+          <select id="estado" required>
+            <option value="">Selecione</option>
+            <option value="SP">São Paulo</option>
+            <option value="RJ">Rio de Janeiro</option>
+            <option value="MG">Minas Gerais</option>
+            <option value="ES">Espírito Santo</option>
+            <option value="BA">Bahia</option>
+            <!-- Adicione mais estados se quiser -->
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="cep">CEP</label>
+          <input type="text" id="cep" placeholder="00000-000" required />
+        </div>
+        <button type="submit" class="btn-primary">Salvar Dados</button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Élan Mode — Moda com impacto social.</p>
+  </footer>
+
+  <script>
+    function formatarMoeda(valor) {
+      var str = valor.toFixed(2);
+      var partes = str.split(".");
+      var reais = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      var centavos = partes[1];
+      return "R$ " + reais + "," + centavos;
+    }
+
+    function carregarPedidos() {
+      var pedidos = localStorage.getItem("meusPedidos");
+      var container = document.getElementById("lista-pedidos");
+
+      if (!pedidos || pedidos === "[]") {
+        container.innerHTML = 
+          '<p>Você ainda não realizou nenhum pedido.</p>' +
+          '<p>Explore nossa coleção e encontre seu próximo look! 💃</p>';
+        return;
+      }
+
+      pedidos = JSON.parse(pedidos);
+      var html = "";
+
+      // Ordem decrescente (pedido mais recente primeiro)
+      for (var i = pedidos.length - 1; i >= 0; i = i - 1) {
+        var p = pedidos[i];
+        html += '<div style="background: #f9f9f9; padding: 16px; border-radius: 8px; margin-bottom: 16px;">';
+        html += '<div style="display: flex; justify-content: space-between; margin-bottom: 12px;">';
+        html += '<strong>Pedido #' + p.id + '</strong>';
+        html += '<span>' + p.data + '</span>';
+        html += '</div>';
+        html += '<div style="margin-bottom: 12px;">';
+        for (var j = 0; j < p.itens.length; j = j + 1) {
+          var item = p.itens[j];
+          html += '<div style="display: flex; justify-content: space-between; font-size: 0.95rem;">';
+          html += '<span>' + item.name + ' (Tamanho: ' + item.size + ', Qtd: ' + item.quantity + ')</span>';
+          html += '<span>' + formatarMoeda(item.totalPrice) + '</span>';
+          html += '</div>';
+        }
+        html += '</div>';
+        html += '<div style="text-align: right; font-weight: bold; color: #e91e63;">';
+        html += 'Total: ' + formatarMoeda(p.total);
+        html += '</div>';
+        html += '</div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var user = localStorage.getItem('loggedInUser');
+      if (!user) {
+        alert('Você precisa estar logado.');
+        window.location.href = 'login.html';
+      }
+
+      document.getElementById('logout-btn').onclick = function() {
+        localStorage.removeItem('loggedInUser');
+        alert('Você saiu da sua conta.');
+        window.location.href = 'PG.html';
+      };
+
+      var tabPedidos = document.getElementById('tab-pedidos');
+      var tabDados = document.getElementById('tab-dados');
+      var conteudoPedidos = document.getElementById('conteudo-pedidos');
+      var conteudoDados = document.getElementById('conteudo-dados');
+
+      tabPedidos.onclick = function() {
+        tabPedidos.classList.add('active');
+        tabDados.classList.remove('active');
+        conteudoPedidos.classList.add('active');
+        conteudoDados.classList.remove('active');
+      };
+
+      tabDados.onclick = function() {
+        tabDados.classList.add('active');
+        tabPedidos.classList.remove('active');
+        conteudoDados.classList.add('active');
+        conteudoPedidos.classList.remove('active');
+      };
+
+      var form = document.getElementById('form-dados');
+      if (form) {
+        form.onsubmit = function(e) {
+          e.preventDefault();
+          alert('✅ Dados salvos com sucesso!');
+        };
+      }
+
+      // Carregar pedidos na inicialização
+      carregarPedidos();
+    });
+  </script>
+</body>
+</html>
