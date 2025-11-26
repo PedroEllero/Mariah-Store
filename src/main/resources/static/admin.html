@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Élan Mode — Painel Administrativo</title>
+  <title>Mariah Store — Painel Administrativo</title>
   <link rel="stylesheet" href="style.css">
 
 </head>
@@ -11,9 +11,9 @@
 
 <div class="admin-container">
 
-  <!-- Sidebar -->
+
   <div class="admin-sidebar">
-    <h2>Élan Mode — Admin</h2>
+    <h2>Mariah store — Admin</h2>
     <a href="#" onclick="showSection('dashboard')" class="active">📊 Dashboard</a>
     <a href="#" onclick="showSection('produtos')">👗 Produtos</a>
     <a href="#" onclick="showSection('fornecedores')">🏭 Fornecedores</a>
@@ -22,10 +22,10 @@
     <a href="index.html">← Voltar para a Loja</a>
   </div>
 
-  <!-- Área de conteúdo -->
+ 
   <div class="admin-content">
 
-    <!-- DASHBOARD -->
+    
     <div id="dashboard" class="admin-section active">
       <h1>Dashboard</h1>
       <p>Bem-vindo ao painel administrativo da Élan Mode!</p>
@@ -38,7 +38,7 @@
       </ul>
     </div>
 
-    <!-- PRODUTOS -->
+    
     <div id="produtos" class="admin-section">
       <h1>Gerenciar Produtos</h1>
       <p>Crie, edite e exclua produtos.</p>
@@ -48,7 +48,7 @@
       </a>
     </div>
 
-    <!-- FORNECEDORES -->
+   
     <div id="fornecedores" class="admin-section">
       <h1>Gerenciar Fornecedores</h1>
       <p>Crie, edite e exclua fornecedores.</p>
@@ -58,7 +58,7 @@
       </a>
     </div>
 
-  <!-- VENDAS -->
+
   <div id="vendas" class="admin-section">
     <h1>Gerenciar Vendas</h1>
     <p>Acompanhe as vendas realizadas na loja.</p>
@@ -74,10 +74,8 @@
 </div>
 
 <script>
-  // ==============================
-  // VERIFICAR SE O USUÁRIO É ADMIN
-  // ==============================
-  const token = localStorage.getItem("token");
+
+   const token = localStorage.getItem("token");
   const roles = JSON.parse(localStorage.getItem("roles") || "[]");
 
   if (!token || !roles.includes("ROLE_ADMIN")) {
@@ -85,9 +83,7 @@
     window.location.href = "index.html";
   }
 
-  // ==============================
-  // Alternar seção do painel
-  // ==============================
+  
   function showSection(id) {
     document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -96,9 +92,7 @@
     event.target.classList.add('active');
   }
 
-  // ==============================
-  // Carregar contadores
-  // ==============================
+ 
   async function carregarResumo() {
     try {
       const produtosResp = await fetch("http://localhost:8080/produtos", {
