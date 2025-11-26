@@ -61,6 +61,14 @@
 </div>
 
 <script>
+    const token = localStorage.getItem("token");
+const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+
+if (!token || !roles.includes("ROLE_ADMIN")) {
+  alert("Acesso negado. Apenas administradores podem acessar.");
+  window.location.href = "index.html";
+}
+
 const API_URL = "http://localhost:8080/fornecedores";
 
 const form = document.getElementById("fornecedorForm");
@@ -68,9 +76,18 @@ const tabela = document.getElementById("tabelaFornecedores");
 
 // ================ LISTAR FORNECEDORES ================
 async function carregarFornecedores() {
-    const resp = await fetch(API_URL);
-    const dados = await resp.json();
+    const token = localStorage.getItem("token");
 
+    const resp = await fetch(API_URL, {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!resp.ok) {
+        alert("Erro: acesso negado. Este painel requer login de administrador.");
+        return;
+    }
+
+    const dados = await resp.json();
     tabela.innerHTML = "";
 
     dados.forEach(f => {
@@ -89,6 +106,7 @@ async function carregarFornecedores() {
     });
 }
 
+
 // ================ SALVAR (CREATE/UPDATE) ================
 form.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -104,11 +122,17 @@ form.addEventListener("submit", async function (e) {
     const url = id ? `${API_URL}/${id}` : API_URL;
     const metodo = id ? "PUT" : "POST";
 
-    const resp = await fetch(url, {
-        method: metodo,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fornecedor)
-    });
+const token = localStorage.getItem("token");
+
+const resp = await fetch(url, {
+    method: metodo,
+    headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(fornecedor)
+});
+
 
     if (resp.ok) {
         alert("Fornecedor salvo!");
@@ -122,7 +146,12 @@ form.addEventListener("submit", async function (e) {
 
 // ================ EDITAR ================
 async function editarFornecedor(id) {
-    const resp = await fetch(`${API_URL}/${id}`);
+    const token = localStorage.getItem("token");
+
+    const resp = await fetch(`${API_URL}/${id}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
+
     const f = await resp.json();
 
     document.getElementById("idFornecedor").value = f.idFornecedor;
@@ -139,9 +168,12 @@ async function deletarFornecedor(id) {
   if (!confirm("Deseja realmente excluir este fornecedor?")) return;
 
   try {
-    const resp = await fetch(`${API_URL}/${id}`, {
-      method: "DELETE"
-    });
+const token = localStorage.getItem("token");
+
+const resp = await fetch(`${API_URL}/${id}`, {
+    method: "DELETE",
+    headers: { "Authorization": `Bearer ${token}` }
+});
 
     if (!resp.ok) {
       const erro = await resp.json();

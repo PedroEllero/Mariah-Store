@@ -87,6 +87,15 @@
   </div>
 
 <script>
+
+const token = localStorage.getItem("token");
+const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+
+if (!token || !roles.includes("ROLE_ADMIN")) {
+  alert("Acesso negado. Apenas administradores podem acessar.");
+  window.location.href = "index.html";
+}
+
 // ===================================
 // URLs DA API
 // ===================================
@@ -94,10 +103,18 @@ const API_PRODUTOS = "http://localhost:8080/produtos";
 const API_FORNECEDORES = "http://localhost:8080/fornecedores";
 
 // ===================================
-// CARREGAR FORNECEDORES
+// CARREGAR FORNECEDORES (COM TOKEN)
 // ===================================
 async function carregarFornecedores() {
-  const resp = await fetch(API_FORNECEDORES);
+  const resp = await fetch(API_FORNECEDORES, {
+    headers: { "Authorization": `Bearer ${token}` }
+  });
+
+  if (!resp.ok) {
+    alert("Erro ao carregar fornecedores. Acesso negado.");
+    return;
+  }
+
   const dados = await resp.json();
 
   const select = document.getElementById("fornecedor");
@@ -109,10 +126,18 @@ async function carregarFornecedores() {
 }
 
 // ===================================
-// LISTAR PRODUTOS
+// LISTAR PRODUTOS (COM TOKEN)
 // ===================================
 async function carregarProdutos() {
-  const resp = await fetch(API_PRODUTOS);
+  const resp = await fetch(API_PRODUTOS, {
+    headers: { "Authorization": `Bearer ${token}` }
+  });
+
+  if (!resp.ok) {
+    alert("Erro ao carregar produtos. Verifique permissões.");
+    return;
+  }
+
   const dados = await resp.json();
 
   const tabela = document.getElementById("tabelaProdutos");
@@ -138,10 +163,18 @@ async function carregarProdutos() {
 }
 
 // ===================================
-// EDITAR PRODUTO
+// EDITAR PRODUTO (COM TOKEN)
 // ===================================
 async function editarProduto(id) {
-  const resp = await fetch(`${API_PRODUTOS}/${id}`);
+  const resp = await fetch(`${API_PRODUTOS}/${id}`, {
+    headers: { "Authorization": `Bearer ${token}` }
+  });
+
+  if (!resp.ok) {
+    alert("Erro ao buscar produto.");
+    return;
+  }
+
   const p = await resp.json();
 
   document.getElementById("idProduto").value = p.idProduto;
@@ -151,40 +184,34 @@ async function editarProduto(id) {
   document.getElementById("categoria").value = p.categoria;
   document.getElementById("imagem").value = p.imagem;
   document.getElementById("descricao").value = p.descricao;
-
   document.getElementById("fornecedor").value = p.fornecedor.idFornecedor;
+
   window.scrollTo(0, 0);
 }
 
 // ===================================
-// DELETAR PRODUTO
+// DELETAR PRODUTO (COM TOKEN)
 // ===================================
 async function deletarProduto(id) {
   if (!confirm("Deseja realmente excluir este produto?")) return;
 
-  try {
-    const resp = await fetch(`${API_PRODUTOS}/${id}`, {
-      method: "DELETE"
-    });
+  const resp = await fetch(`${API_PRODUTOS}/${id}`, {
+    method: "DELETE",
+    headers: { "Authorization": `Bearer ${token}` }
+  });
 
-    if (!resp.ok) {
-      const erro = await resp.json();
-      mostrarMensagem(erro.message || "Não foi possível excluir o produto.", "erro");
-      return;
-    }
-
-    mostrarMensagem("Produto removido com sucesso!", "sucesso");
-    carregarProdutos();
-
-  } catch (e) {
-    mostrarMensagem("Erro ao conectar ao servidor.", "erro");
-    console.error(e);
+  if (!resp.ok) {
+    const erro = await resp.json().catch(() => null);
+    mostrarMensagem(erro?.message || "Não foi possível excluir o produto.", "erro");
+    return;
   }
+
+  mostrarMensagem("Produto removido com sucesso!", "sucesso");
+  carregarProdutos();
 }
 
-
 // ===================================
-// SALVAR PRODUTO (CREATE/UPDATE)
+// SALVAR PRODUTO (COM TOKEN)
 // ===================================
 document.getElementById("produtoForm").addEventListener("submit", async function(e) {
   e.preventDefault();
@@ -203,14 +230,22 @@ document.getElementById("produtoForm").addEventListener("submit", async function
     }
   };
 
-  const metodo = id ? "PUT" : "POST" ;
+  const metodo = id ? "PUT" : "POST";
   const url = id ? `${API_PRODUTOS}/${id}` : API_PRODUTOS;
 
-  await fetch(url, {
+  const resp = await fetch(url, {
     method: metodo,
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
     body: JSON.stringify(produto)
   });
+
+  if (!resp.ok) {
+    alert("Erro ao salvar produto.");
+    return;
+  }
 
   this.reset();
   carregarProdutos();
@@ -223,7 +258,6 @@ window.onload = () => {
   carregarFornecedores();
   carregarProdutos();
 }
-
 
 function mostrarMensagem(texto, tipo = "erro") {
   const box = document.getElementById("msg");
@@ -248,8 +282,8 @@ function mostrarMensagem(texto, tipo = "erro") {
     box.style.display = "none";
   }, 3500);
 }
-
 </script>
+
 
 </body>
 </html>

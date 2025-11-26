@@ -2,17 +2,13 @@ package com.mariah.mariah_store.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
+import com.mariah.mariah_store.auth.JwtUtil;
 import com.mariah.mariah_store.dto.ClienteResponse;
 import com.mariah.mariah_store.dto.ClienteUpdateDTO;
 import com.mariah.mariah_store.dto.LoginRequest;
@@ -26,27 +22,38 @@ import jakarta.validation.Valid;
 public class ClienteController {
 
     private final ClienteService service;
-    public ClienteController(ClienteService service) {
+    private final JwtUtil jwtUtil;
+
+    // ÚNICO CONSTRUTOR
+    public ClienteController(ClienteService service, JwtUtil jwtUtil) {
         this.service = service;
+        this.jwtUtil = jwtUtil;
     }
 
+    // CREATE
     @PostMapping
     public ResponseEntity<ClienteModel> criar(@Valid @RequestBody ClienteModel cliente) {
         ClienteModel salvo = service.criarCliente(cliente);
         URI location = URI.create("/clientes/" + salvo.getId());
-        return ResponseEntity.created(location).body(salvo); // 201 Created
+        return ResponseEntity.created(location).body(salvo);
     }
 
+    // READ ALL
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<ClienteModel>> listar() {
-        return ResponseEntity.ok(service.listarClientes()); // 200 OK
+        return ResponseEntity.ok(service.listarClientes());
     }
 
+    // READ BY ID
+    @PreAuthorize("hasRole('ADMIN') or @securityUtils.isOwner(#id)")
     @GetMapping("/{id}")
     public ResponseEntity<ClienteModel> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id)); // 200 OK ou 404 via exception
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
+    // UPDATE
+    @PreAuthorize("hasRole('ADMIN') or @securityUtils.isOwner(#id)")
     @PutMapping("/{id}")
     public ResponseEntity<ClienteModel> atualizar(
             @PathVariable Long id,
@@ -56,24 +63,38 @@ public class ClienteController {
         return ResponseEntity.ok(atualizado);
     }
 
-
+    // DELETE
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletarCliente(id);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return ResponseEntity.noContent().build();
     }
 
+    // LOGIN + JWT
     @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-    ClienteModel cliente = service.login(request.getEmail(), request.getSenha());
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-    ClienteResponse response = new ClienteResponse(
-            cliente.getId(),
-            cliente.getNome(),
-            cliente.getEmail()
-    );
+        // 1) Login seguro (BCrypt)
+        ClienteModel cliente = service.login(request.getEmail(), request.getSenha());
 
-    return ResponseEntity.ok(response);
-}
+        // 2) Gera token JWT
+        String token = jwtUtil.generateToken(cliente.getEmail(), cliente.getRoles());
 
+        // 3) Monta resposta do usuário
+        ClienteResponse response = new ClienteResponse(
+                cliente.getId(),
+                cliente.getNome(),
+                cliente.getEmail()
+        );
+
+        // 4) Retorno final
+        return ResponseEntity.ok(
+                Map.of(
+                        "token", token,
+                        "usuario", response,
+                        "roles", cliente.getRoles()
+                )
+        );
+    }
 }

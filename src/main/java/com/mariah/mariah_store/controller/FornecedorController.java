@@ -3,6 +3,7 @@ package com.mariah.mariah_store.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,18 +30,21 @@ public class FornecedorController {
     }
 
     // LISTAR TODOS
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<FornecedorModel> listar() {
         return fornecedorService.listarTodos();
     }
 
     // BUSCAR POR ID
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public FornecedorModel buscarPorId(@PathVariable Long id) {
         return fornecedorService.buscarPorId(id);
     }
 
     // CRIAR
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FornecedorModel criar(@Valid @RequestBody FornecedorModel fornecedor) {
@@ -48,6 +52,7 @@ public class FornecedorController {
     }
 
     // ATUALIZAR
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public FornecedorModel atualizar(@PathVariable Long id,
                                      @Valid @RequestBody FornecedorModel fornecedorAtualizado) {
@@ -55,6 +60,7 @@ public class FornecedorController {
     }
 
     // DELETAR
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id) {

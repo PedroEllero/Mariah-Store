@@ -74,7 +74,20 @@
 </div>
 
 <script>
-  // Alternar seção
+  // ==============================
+  // VERIFICAR SE O USUÁRIO É ADMIN
+  // ==============================
+  const token = localStorage.getItem("token");
+  const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+
+  if (!token || !roles.includes("ROLE_ADMIN")) {
+    alert("Acesso negado. Apenas administradores podem acessar este painel.");
+    window.location.href = "index.html";
+  }
+
+  // ==============================
+  // Alternar seção do painel
+  // ==============================
   function showSection(id) {
     document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -83,23 +96,41 @@
     event.target.classList.add('active');
   }
 
+  // ==============================
   // Carregar contadores
+  // ==============================
   async function carregarResumo() {
-    const produtosResp = await fetch("http://localhost:8080/produtos");
-    const fornecedoresResp = await fetch("http://localhost:8080/fornecedores");
+    try {
+      const produtosResp = await fetch("http://localhost:8080/produtos", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
 
-    const produtos = await produtosResp.json();
-    const fornecedores = await fornecedoresResp.json();
+      const fornecedoresResp = await fetch("http://localhost:8080/fornecedores", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
 
-    document.getElementById("count-produtos").textContent =
-      "Produtos cadastrados: " + produtos.length;
+      if (!produtosResp.ok || !fornecedoresResp.ok) {
+        throw new Error("Acesso negado");
+      }
 
-    document.getElementById("count-fornecedores").textContent =
-      "Fornecedores cadastrados: " + fornecedores.length;
+      const produtos = await produtosResp.json();
+      const fornecedores = await fornecedoresResp.json();
+
+      document.getElementById("count-produtos").textContent =
+        "Produtos cadastrados: " + produtos.length;
+
+      document.getElementById("count-fornecedores").textContent =
+        "Fornecedores cadastrados: " + fornecedores.length;
+
+    } catch (e) {
+      console.error(e);
+      alert("Erro ao carregar dados do painel administrativo.");
+    }
   }
 
   carregarResumo();
 </script>
+
 
 </body>
 </html>

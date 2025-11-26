@@ -3,6 +3,7 @@ package com.mariah.mariah_store.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,13 +35,13 @@ public class ProdutoController {
         return produtoService.listarTodos();
     }
 
-    // BUSCAR POR ID
     @GetMapping("/{id}")
     public ProdutoModel buscarPorId(@PathVariable Long id) {
         return produtoService.buscarPorId(id);
     }
 
     // CRIAR
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoModel criar(@Valid @RequestBody ProdutoModel produto) {
@@ -48,6 +49,7 @@ public class ProdutoController {
     }
 
     // ATUALIZAR
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ProdutoModel atualizar(@PathVariable Long id, 
                                   @Valid @RequestBody ProdutoModel produtoAtualizado) {
@@ -55,6 +57,7 @@ public class ProdutoController {
     }
 
     // DELETAR
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id) {

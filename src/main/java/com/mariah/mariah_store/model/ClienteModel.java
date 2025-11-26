@@ -1,12 +1,16 @@
 package com.mariah.mariah_store.model;
 
 import java.time.LocalDateTime;
-
+import java.util.Set;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -41,6 +45,11 @@ public class ClienteModel {
     protected void prePersist() {
         this.dataCadastro = LocalDateTime.now();
     }
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "cliente_roles", joinColumns = @JoinColumn(name = "cliente_id"))
+    @Column(name = "role")
+    private Set<String> roles;
 
     // GETTERS E SETTERS
 
@@ -84,5 +93,13 @@ public class ClienteModel {
     }
     public void setDataCadastro(LocalDateTime dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 }
