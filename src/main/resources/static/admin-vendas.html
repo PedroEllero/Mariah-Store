@@ -56,12 +56,29 @@
 
 </div>
 
+
+
+</body>
 <script>
+// ===============================================
+// VALIDAR SE É ADMIN
+// ===============================================
+const token = localStorage.getItem("token");
+const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+
+if (!token || !roles.includes("ROLE_ADMIN")) {
+  alert("Acesso negado. Apenas administradores podem acessar.");
+  window.location.href = "index.html";
+}
+
+// ===============================================
+// URLs DA API
+// ===============================================
 const API_VENDAS = "http://localhost:8080/vendas";
 
-// ================================
+// ===============================================
 // FUNÇÃO DE MENSAGENS
-// ================================
+// ===============================================
 function mostrarMensagem(texto, tipo="erro") {
   const box = document.getElementById("msg");
   box.textContent = texto;
@@ -84,12 +101,20 @@ function mostrarMensagem(texto, tipo="erro") {
   setTimeout(() => { box.style.display = "none"; }, 3500);
 }
 
-// ================================
-// CARREGAR TODAS AS VENDAS
-// ================================
+// ===============================================
+// CARREGAR TODAS AS VENDAS (COM TOKEN)
+// ===============================================
 async function carregarVendas() {
   try {
-    const resp = await fetch(API_VENDAS);
+    const resp = await fetch(API_VENDAS, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!resp.ok) {
+      mostrarMensagem("Erro ao carregar vendas. Permissão negada.", "erro");
+      return;
+    }
+
     const dados = await resp.json();
 
     const tabela = document.getElementById("tabelaVendas");
@@ -115,12 +140,20 @@ async function carregarVendas() {
   }
 }
 
-// ================================
-// DETALHES DA VENDA
-// ================================
+// ===============================================
+// DETALHES DA VENDA (COM TOKEN)
+// ===============================================
 async function verDetalhes(id) {
   try {
-    const resp = await fetch(`${API_VENDAS}/${id}`);
+    const resp = await fetch(`${API_VENDAS}/${id}`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!resp.ok) {
+      mostrarMensagem("Erro ao carregar detalhes. Permissão negada.", "erro");
+      return;
+    }
+
     const v = await resp.json();
 
     let html = `
@@ -155,20 +188,18 @@ async function verDetalhes(id) {
   }
 }
 
-// ================================
+// ===============================================
 // FECHAR MODAL
-// ================================
+// ===============================================
 function fecharModal() {
   document.getElementById("modal").style.display = "none";
 }
 
-// ================================
+// ===============================================
 // INICIALIZAÇÃO
-// ================================
+// ===============================================
 window.onload = () => {
   carregarVendas();
 };
 </script>
-
-</body>
 </html>

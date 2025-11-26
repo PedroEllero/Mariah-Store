@@ -73,8 +73,10 @@
         }
 
         // LOGIN OK
-        localStorage.setItem("loggedInUser", data.nome);
-        localStorage.setItem("loggedInUserId", data.id);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("loggedInUserId", data.usuario.id);
+        localStorage.setItem("loggedInUser", data.usuario.nome);
+        localStorage.setItem("roles", JSON.stringify(data.roles));
 
         window.location.href = "index.html";
 

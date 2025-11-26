@@ -111,43 +111,49 @@
       showToast("Item removido");
     }
 
-    async function finalizarCompra() {
-      const userId = localStorage.getItem("loggedInUserId");
-      if (!userId) {
-        showToast("Faça login.");
-        return;
-      }
+async function finalizarCompra() {
+  const userId = localStorage.getItem("loggedInUserId");
+  const token = localStorage.getItem("token");
 
-      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-      if (cart.length === 0) {
-        showToast("Carrinho vazio");
-        return;
-      }
+  if (!userId || !token) {
+    showToast("Faça login.");
+    return;
+  }
 
-      const venda = {
-        clienteId: parseInt(userId),
-        itens: cart.map(i => ({
-          produtoId: i.id,
-          quantidade: i.quantity
-        }))
-      };
+  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  if (cart.length === 0) {
+    showToast("Carrinho vazio");
+    return;
+  }
 
-      const resp = await fetch("http://localhost:8080/vendas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(venda)
-      });
+  const venda = {
+    clienteId: parseInt(userId),
+    itens: cart.map(i => ({
+      produtoId: i.id,
+      quantidade: i.quantity
+    }))
+  };
 
-      if (!resp.ok) {
-        showToast("Erro ao registrar compra");
-        return;
-      }
+  const resp = await fetch("http://localhost:8080/vendas", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(venda)
+  });
 
-      localStorage.removeItem("cart");
+  if (!resp.ok) {
+    showToast("Erro ao registrar compra");
+    return;
+  }
 
-      showToast("Compra finalizada!");
-      setTimeout(() => window.location.href = "perfil.html#pedidos", 1200);
-    }
+  localStorage.removeItem("cart");
+
+  showToast("Compra finalizada!");
+  setTimeout(() => window.location.href = "perfil.html#pedidos", 1200);
+}
+
 
     window.onload = carregarCarrinho;
   </script>

@@ -79,7 +79,14 @@ document.addEventListener('DOMContentLoaded', async function () {
   // 2. Carregar dados reais do cliente
   async function carregarDadosCliente() {
     try {
-      const response = await fetch(`http://localhost:8080/clientes/${userId}`);
+          const token = localStorage.getItem("token");
+
+          const response = await fetch(`http://localhost:8080/clientes/${userId}`, {
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          });
+
 
       if (!response.ok) {
         alert("Erro ao buscar seus dados. Faça login novamente.");
@@ -134,11 +141,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     const clienteAtualizado = { nome, email, telefone };
 
     try {
-      const response = await fetch(`http://localhost:8080/clientes/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(clienteAtualizado)
-      });
+          const token = localStorage.getItem("token");
+
+          const response = await fetch(`http://localhost:8080/clientes/${userId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(clienteAtualizado)
+          });
+
 
       if (response.ok) {
         document.getElementById("sucesso").style.display = "block";
@@ -181,7 +194,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     try {
-        const resp = await fetch(`http://localhost:8080/vendas/cliente/${userId}`);
+          const token = localStorage.getItem("token");
+
+          const resp = await fetch(`http://localhost:8080/vendas/cliente/${userId}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+
 
         if (resp.status === 404) {
             container.innerHTML = "<p>Você ainda não realizou nenhum pedido.</p>";
