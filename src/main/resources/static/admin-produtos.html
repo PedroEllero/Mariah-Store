@@ -15,7 +15,7 @@
       ← Voltar ao Painel
     </a>
     <div id="msg" class="msg-box" style="margin: 10px 0; display:none;"></div>
-    <!-- Formulário -->
+    
     <h2 style="margin-top:20px;">Adicionar / Editar Produto</h2>
 
     <form id="produtoForm">
@@ -96,15 +96,11 @@ if (!token || !roles.includes("ROLE_ADMIN")) {
   window.location.href = "index.html";
 }
 
-// ===================================
-// URLs DA API
-// ===================================
+
 const API_PRODUTOS = "http://localhost:8080/produtos";
 const API_FORNECEDORES = "http://localhost:8080/fornecedores";
 
-// ===================================
-// CARREGAR FORNECEDORES (COM TOKEN)
-// ===================================
+
 async function carregarFornecedores() {
   const resp = await fetch(API_FORNECEDORES, {
     headers: { "Authorization": `Bearer ${token}` }
@@ -125,9 +121,7 @@ async function carregarFornecedores() {
   });
 }
 
-// ===================================
-// LISTAR PRODUTOS (COM TOKEN)
-// ===================================
+
 async function carregarProdutos() {
   const resp = await fetch(API_PRODUTOS, {
     headers: { "Authorization": `Bearer ${token}` }
@@ -162,9 +156,7 @@ async function carregarProdutos() {
   });
 }
 
-// ===================================
-// EDITAR PRODUTO (COM TOKEN)
-// ===================================
+
 async function editarProduto(id) {
   const resp = await fetch(`${API_PRODUTOS}/${id}`, {
     headers: { "Authorization": `Bearer ${token}` }
@@ -189,9 +181,7 @@ async function editarProduto(id) {
   window.scrollTo(0, 0);
 }
 
-// ===================================
-// DELETAR PRODUTO (COM TOKEN)
-// ===================================
+
 async function deletarProduto(id) {
   if (!confirm("Deseja realmente excluir este produto?")) return;
 
@@ -210,9 +200,7 @@ async function deletarProduto(id) {
   carregarProdutos();
 }
 
-// ===================================
-// SALVAR PRODUTO (COM TOKEN)
-// ===================================
+
 document.getElementById("produtoForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
@@ -251,9 +239,7 @@ document.getElementById("produtoForm").addEventListener("submit", async function
   carregarProdutos();
 });
 
-// ===================================
-// INICIALIZAÇÃO
-// ===================================
+
 window.onload = () => {
   carregarFornecedores();
   carregarProdutos();

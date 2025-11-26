@@ -74,7 +74,7 @@ const API_URL = "http://localhost:8080/fornecedores";
 const form = document.getElementById("fornecedorForm");
 const tabela = document.getElementById("tabelaFornecedores");
 
-// ================ LISTAR FORNECEDORES ================
+
 async function carregarFornecedores() {
     const token = localStorage.getItem("token");
 
@@ -107,7 +107,7 @@ async function carregarFornecedores() {
 }
 
 
-// ================ SALVAR (CREATE/UPDATE) ================
+
 form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -144,7 +144,7 @@ const resp = await fetch(url, {
     }
 });
 
-// ================ EDITAR ================
+
 async function editarFornecedor(id) {
     const token = localStorage.getItem("token");
 
@@ -162,7 +162,7 @@ async function editarFornecedor(id) {
     window.scrollTo(0, 0);
 }
 
-// ================ DELETAR ================
+
 async function deletarFornecedor(id) {
 
   if (!confirm("Deseja realmente excluir este fornecedor?")) return;
@@ -190,7 +190,6 @@ const resp = await fetch(`${API_URL}/${id}`, {
   }
 }
 
-// ================ INICIALIZAÇÃO ================
 carregarFornecedores();
 
 function mostrarMensagem(texto, tipo = "erro") {

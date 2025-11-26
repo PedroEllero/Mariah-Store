@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Meu Perfil — Élan Mode</title>
+  <title>Meu Perfil — Mariah store</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <header class="header header-perfil">
   <a href="index.html" class="btn-voltar">← Página inicial</a>
 
-  <h1>Élan Mode</h1>
+  <h1>Mariah store</h1>
   <p>Sua conta, seus dados, seu estilo.</p>
 </header>
 
@@ -25,15 +25,14 @@
       <button id="tab-dados" class="tab-btn">Dados Pessoais</button>
     </div>
 
-    <!-- Aba: Meus Pedidos -->
+   
     <div id="conteudo-pedidos" class="tab-content active">
       <h2>Meus Pedidos</h2>
       <div id="lista-pedidos">
-        <!-- Pedidos carregados via script -->
+    
       </div>
     </div>
 
-    <!-- Aba: Dados Pessoais -->
     <div id="conteudo-dados" class="tab-content">
       <h2>Dados Pessoais</h2>
 
@@ -68,7 +67,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', async function () {
 
-  // 1. Verifica login
+  
   const userId = localStorage.getItem('loggedInUserId');
   if (!userId) {
     alert('Você precisa estar logado.');
@@ -76,7 +75,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     return;
   }
 
-  // 2. Carregar dados reais do cliente
   async function carregarDadosCliente() {
     try {
           const token = localStorage.getItem("token");
@@ -97,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       const cliente = await response.json();
 
-      // Preenche os campos do formulário
+     
       document.getElementById("nome").value = cliente.nome;
       document.getElementById("email").value = cliente.email;
       document.getElementById("telefone").value = cliente.telefone || "";
@@ -110,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   await carregarDadosCliente();
 
-  // 3. Abas do perfil
+  
   const tabPedidos = document.getElementById("tab-pedidos");
   const tabDados = document.getElementById("tab-dados");
   const conteudoPedidos = document.getElementById("conteudo-pedidos");
@@ -130,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     conteudoPedidos.classList.remove("active");
   };
 
-  // 4. Atualizar dados (PUT /clientes/{id})
+  
   document.getElementById("form-dados").onsubmit = async function (e) {
     e.preventDefault();
 
@@ -168,14 +166,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   };
 
-  // 5. Logout
+  
   document.getElementById("logout-btn").onclick = function() {
     localStorage.removeItem("loggedInUser");
     localStorage.removeItem("loggedInUserId");
     window.location.href = "index.html";
   };
 
-  // 6. Pedidos (a função original permanece)
   function formatarMoeda(valor) {
     var str = valor.toFixed(2);
     var partes = str.split(".");
