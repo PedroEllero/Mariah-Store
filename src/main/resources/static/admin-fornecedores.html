@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Fornecedores</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main-container">
+
+  <h1>Gerenciar Fornecedores</h1>
+
+  <a href="admin.html" class="btn-view" style="margin-bottom:20px; display:inline-block;">
+    ← Voltar ao Painel
+  </a>
+
+  <h2>Adicionar / Editar Fornecedor</h2>
+
+  <form id="fornecedorForm" style="margin-top:20px;">
+      <input type="hidden" id="idFornecedor">
+
+      <div class="input-group">
+        <label>Nome</label>
+        <input type="text" id="nome" required>
+      </div>
+
+      <div class="input-group">
+        <label>CNPJ</label>
+        <input type="text" id="cnpj" required>
+      </div>
+
+      <div class="input-group">
+        <label>Telefone</label>
+        <input type="text" id="telefone" required>
+      </div>
+
+      <button type="submit" class="btn-primary" style="margin-top:12px;">
+        Salvar Fornecedor
+      </button>
+  </form>
+
+  <h2 style="margin-top:30px;">Lista de Fornecedores</h2>
+
+  <table style="margin-top:10px;">
+      <thead>
+          <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>CNPJ</th>
+              <th>Telefone</th>
+              <th>Ações</th>
+          </tr>
+      </thead>
+      <tbody id="tabelaFornecedores"></tbody>
+  </table>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:8080/fornecedores";
+
+const form = document.getElementById("fornecedorForm");
+const tabela = document.getElementById("tabelaFornecedores");
+
+// ================ LISTAR FORNECEDORES ================
+async function carregarFornecedores() {
+    const resp = await fetch(API_URL);
+    const dados = await resp.json();
+
+    tabela.innerHTML = "";
+
+    dados.forEach(f => {
+        tabela.innerHTML += `
+            <tr>
+                <td>${f.idFornecedor}</td>
+                <td>${f.nome}</td>
+                <td>${f.cnpj}</td>
+                <td>${f.telefone}</td>
+                <td>
+                    <button class="btn-edit" onclick="editarFornecedor(${f.idFornecedor})">Editar</button>
+                    <button class="btn-delete" onclick="deletarFornecedor(${f.idFornecedor})">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+// ================ SALVAR (CREATE/UPDATE) ================
+form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const id = document.getElementById("idFornecedor").value;
+
+    const fornecedor = {
+        nome: document.getElementById("nome").value,
+        cnpj: document.getElementById("cnpj").value,
+        telefone: document.getElementById("telefone").value
+    };
+
+    const url = id ? `${API_URL}/${id}` : API_URL;
+    const metodo = id ? "PUT" : "POST";
+
+    const resp = await fetch(url, {
+        method: metodo,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fornecedor)
+    });
+
+    if (resp.ok) {
+        alert("Fornecedor salvo!");
+        form.reset();
+        carregarFornecedores();
+        window.scrollTo(0, 0);
+    } else {
+        alert("Erro ao salvar fornecedor.");
+    }
+});
+
+// ================ EDITAR ================
+async function editarFornecedor(id) {
+    const resp = await fetch(`${API_URL}/${id}`);
+    const f = await resp.json();
+
+    document.getElementById("idFornecedor").value = f.idFornecedor;
+    document.getElementById("nome").value = f.nome;
+    document.getElementById("cnpj").value = f.cnpj;
+    document.getElementById("telefone").value = f.telefone;
+
+    window.scrollTo(0, 0);
+}
+
+// ================ DELETAR ================
+async function deletarFornecedor(id) {
+    if (!confirm("Deseja excluir este fornecedor?")) return;
+
+    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    carregarFornecedores();
+}
+
+// ================ INICIALIZAÇÃO ================
+carregarFornecedores();
+</script>
+
+</body>
+</html>

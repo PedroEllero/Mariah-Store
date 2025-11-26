@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mariah.mariah_store.dto.ClienteResponse;
+import com.mariah.mariah_store.dto.ClienteUpdateDTO;
 import com.mariah.mariah_store.dto.LoginRequest;
 import com.mariah.mariah_store.model.ClienteModel;
 import com.mariah.mariah_store.service.ClienteService;
@@ -47,10 +48,14 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteModel> atualizar(@PathVariable Long id, @Valid @RequestBody ClienteModel cliente) {
-        ClienteModel atualizado = service.atualizarCliente(id, cliente);
-        return ResponseEntity.ok(atualizado); // 200 OK
+    public ResponseEntity<ClienteModel> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody ClienteUpdateDTO dto) {
+
+        ClienteModel atualizado = service.atualizarCliente(id, dto);
+        return ResponseEntity.ok(atualizado);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
