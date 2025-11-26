@@ -3,6 +3,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.mariah.mariah_store.dto.ClienteUpdateDTO;
 import com.mariah.mariah_store.exception.BadRequestException;
 import com.mariah.mariah_store.exception.ResourceNotFoundException;
 import com.mariah.mariah_store.model.ClienteModel;
@@ -34,16 +35,18 @@ public class ClienteService {
     }
 
     // UPDATE
-    public ClienteModel atualizarCliente(Long id, ClienteModel dados) {
-        ClienteModel cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente com id " + id + " não encontrado"));
+    public ClienteModel atualizarCliente(Long id, ClienteUpdateDTO dados) {
 
-        // atualize campos necessários (evite sobrescrever id)
+        ClienteModel cliente = clienteRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
+
         cliente.setNome(dados.getNome());
         cliente.setEmail(dados.getEmail());
         cliente.setTelefone(dados.getTelefone());
+
         return clienteRepository.save(cliente);
     }
+
 
     // DELETE
     public void deletarCliente(Long id) {

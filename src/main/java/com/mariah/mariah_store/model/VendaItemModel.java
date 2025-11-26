@@ -1,59 +1,80 @@
 package com.mariah.mariah_store.model;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class VendaItemModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idVendaItem;
-     @Column(name = "vendaItem", nullable = false)
-    private LocalDateTime data;
-    private Long idCliente;
-    private Double valorTotal;
+    private Long idItemVenda;
 
-        @PrePersist
-public void prePersist() {
-    data = LocalDateTime.now();
-}
+    @ManyToOne
+    @JoinColumn(name = "id_venda", nullable = false)
+    private VendaModel venda;
 
-    public Long getIdVendaItem() {
-        return idVendaItem;
+    @ManyToOne
+    @JoinColumn(name = "id_produto", nullable = false)
+    private ProdutoModel produto;
+
+    private Integer quantidade;
+
+    private Double precoUnitario;
+
+    private Double subtotal;
+
+    // GETTERS / SETTERS
+
+    public Long getIdItemVenda() {
+        return idItemVenda;
     }
 
-    public void setIdVendaItem(Long idVendaItem) {
-        this.idVendaItem = idVendaItem;
+    public void setIdItemVenda(Long idItemVenda) {
+        this.idItemVenda = idItemVenda;
     }
 
-    public LocalDateTime getData() {
-        return data;
+    public VendaModel getVenda() {
+        return venda;
     }
 
-    public void setData(LocalDateTime data) {
-        this.data = data;
+    public void setVenda(VendaModel venda) {
+        this.venda = venda;
     }
 
-    public Long getIdCliente() {
-        return idCliente;
+    public ProdutoModel getProduto() {
+        return produto;
     }
 
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
+    public void setProduto(ProdutoModel produto) {
+        this.produto = produto;
     }
 
-    public Double getValorTotal() {
-        return valorTotal;
+    public Integer getQuantidade() {
+        return quantidade;
     }
 
-    public void setValorTotal(Double valorTotal) {
-        this.valorTotal = valorTotal;
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public Double getPrecoUnitario() {
+        return precoUnitario;
+    }
+
+    public void setPrecoUnitario(Double precoUnitario) {
+        this.precoUnitario = precoUnitario;
+    }
+
+    public Double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(Double subtotal) {
+        this.subtotal = subtotal;
     }
 }

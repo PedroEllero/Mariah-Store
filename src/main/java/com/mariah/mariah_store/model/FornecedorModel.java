@@ -4,18 +4,29 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class FornecedorModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idFornecedor;
+
+    @NotBlank(message = "O nome do fornecedor é obrigatório.")
+    @Size(max = 100)
     private String nome;
+
+    @NotBlank(message = "O CNPJ é obrigatório.")
+    @Size(max = 18) // Ex.: 00.000.000/0000-00
     private String cnpj;
+
+    @NotBlank(message = "O telefone é obrigatório.")
+    @Size(max = 20)
     private String telefone;
 
-     public Long getIdFornecedor() {
+    public Long getIdFornecedor() {
         return idFornecedor;
     }
 

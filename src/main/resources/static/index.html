@@ -4,238 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Élan Mode — Loja de Roupas</title>
-  <style>
-    :root {
-      --black: #0a0a0a;
-      --pink: #e91e63;
-      --pink-light: #ff4081;
-      --light-bg: #f8f8f8;
-      --white: #ffffff;
-      --border-color: #e0e0e0;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Inter", sans-serif;
-    }
-
-    body {
-      background-color: var(--light-bg);
-      color: var(--black);
-    }
-
-    #auth-button {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
-
-    #cart-button {
-      position: fixed;
-      top: 20px;
-      right: 100px;
-      z-index: 1000;
-      display: none;
-    }
-
-    .login-trigger-btn,
-    .profile-btn,
-    .cart-btn {
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.3s;
-    }
-
-    .login-trigger-btn {
-      background: transparent;
-      color: var(--pink);
-      border: 1px solid var(--pink);
-    }
-
-    .login-trigger-btn:hover {
-      background: var(--pink);
-      color: var(--white);
-    }
-
-    .profile-btn {
-      background: var(--black);
-      color: var(--white);
-      border: none;
-    }
-
-    .profile-btn:hover {
-      background: var(--pink);
-    }
-
-    .cart-btn {
-      background: var(--pink);
-      color: var(--white);
-      border: none;
-    }
-
-    .cart-btn:hover {
-      background: var(--pink-light);
-    }
-
-    .header {
-      background-color: var(--black);
-      color: var(--white);
-      padding: 60px 20px 40px;
-      text-align: center;
-    }
-
-    .header h1 {
-      font-size: 2.4rem;
-      color: var(--pink-light);
-    }
-
-    .header p {
-      margin-top: 12px;
-      color: #ccc;
-      font-size: 1.2rem;
-    }
-
-    .search-filters {
-      max-width: 1200px;
-      margin: 30px auto;
-      padding: 0 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      justify-content: center;
-    }
-
-    .search-box {
-      flex: 1;
-      min-width: 250px;
-      position: relative;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 14px 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 50px;
-      font-size: 1rem;
-      outline: none;
-    }
-
-    .search-box input:focus {
-      border-color: var(--pink);
-    }
-
-    .filter-select {
-      padding: 14px 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 50px;
-      background: white;
-      font-size: 1rem;
-      outline: none;
-      min-width: 180px;
-    }
-
-    .products-section {
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-title {
-      text-align: center;
-      margin: 40px 0 24px;
-      font-size: 1.8rem;
-    }
-
-    .section-title::after {
-      content: '';
-      display: block;
-      width: 60px;
-      height: 3px;
-      background: var(--pink);
-      margin: 8px auto;
-    }
-
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 28px;
-      padding: 0 10px;
-    }
-
-    .product-card {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-
-    .product-card img {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-    }
-
-    .product-card h3 {
-      padding: 16px 16px 8px;
-      font-size: 1.2rem;
-    }
-
-    .product-card .price {
-      padding: 0 16px 12px;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--pink);
-    }
-
-    .btn-view {
-      width: 100%;
-      padding: 12px;
-      background: var(--black);
-      color: white;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 6px;
-    }
-
-    .btn-view:hover {
-      background: var(--pink);
-    }
-
-    .footer {
-      text-align: center;
-      padding: 24px;
-      color: #aaa;
-      background: var(--black);
-      margin-top: 60px;
-    }
-
-    @media (max-width: 768px) {
-      .search-filters {
-        flex-direction: column;
-      }
-      .search-box {
-        min-width: 100%;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <!-- Botão de login/perfil -->
-  <div id="auth-button">
+  <div id="auth-button" class="auth-container">
     <a href="login.html" id="auth-link" class="login-trigger-btn">Entrar</a>
+
+    <div id="auth-menu" class="auth-menu">
+      <a href="perfil.html">Meu Perfil</a>
+      <a href="perfil.html#pedidos">Meus Pedidos</a>
+      <button id="logout-btn" class="logout-drop">Sair</button>
+    </div>
   </div>
 
-  <!-- Botão de carrinho (só visível se logado) -->
+  <!-- Botão de carrinho -->
   <div id="cart-button">
     <a href="carrinho.html" class="cart-btn">
       🛒 <span id="cart-count">0</span>
@@ -247,147 +31,185 @@
     <p>Elegância, atitude e propósito em cada peça.</p>
   </header>
 
-  <div class="search-filters">
-    <div class="search-box">
-      <input type="text" id="search-input" placeholder="Buscar por nome ou estilo..." />
-    </div>
-    <select id="category-filter" class="filter-select">
-      <option value="all">Todas as categorias</option>
-      <option value="vestidos">Vestidos</option>
-      <option value="saias">Saias</option>
-      <option value="blusas">Blusas</option>
-      <option value="calcas">Calças</option>
-    </select>
-  </div>
+  <div class="main-container">
 
-  <section class="products-section">
-    <div id="products-container" class="products-grid">
-      <!-- Produtos serão inseridos aqui -->
+    <!-- BARRA DE BUSCA + FILTRO DE CATEGORIA -->
+    <div class="search-filters">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Buscar por nome ou estilo..." />
+      </div>
+
+      <select id="category-filter" class="filter-select">
+        <option value="all">Todas as categorias</option>
+        <option value="vestidos">Vestidos</option>
+        <option value="saias">Saias</option>
+        <option value="blusas">Blusas</option>
+        <option value="calcas">Calças</option>
+      </select>
     </div>
-  </section>
+
+    <!-- GRID DE PRODUTOS -->
+    <div id="products-container" class="products-grid"></div>
+
+  </div>
 
   <footer class="footer">
     <p>&copy; 2025 Élan Mode — Moda com impacto social.</p>
   </footer>
 
-  <script>
-    var products = [
-      // Vestidos (4)
-      { id: 1, name: "Vestido Floral Midi", price: 189.90, category: "vestidos", img: "imagens/vestido01.jpg" },
-      { id: 2, name: "Vestido Preto Elegante", price: 229.90, category: "vestidos", img: "imagens/vestido01.jpg" },
-      { id: 3, name: "Vestido Listrado Casual", price: 159.90, category: "vestidos", img: "imagens/vestido01.jpg" },
-      { id: 4, name: "Vestido Longo em Cetim", price: 299.90, category: "vestidos", img: "imagens/vestido01.jpg" },
+<script>
+// =====================================================
+// CARRINHO
+// =====================================================
+function atualizarContadorCarrinho() {
+  var carrinho = localStorage.getItem("carrinho");
+  var contador = document.getElementById("cart-count");
 
-      // Saias (4)
-      { id: 10, name: "Saia Midi em Cetim", price: 129.90, category: "saias", img: "imagens/saia01.jpg" },
-      { id: 11, name: "Saia Jeans com Fenda", price: 109.90, category: "saias", img: "imagens/saia01.jpg" },
-      { id: 12, name: "Saia Lápis Preta", price: 119.90, category: "saias", img: "imagens/saia01.jpg" },
-      { id: 13, name: "Saia Longa Estampada", price: 149.90, category: "saias", img: "imagens/saia01.jpg" },
+  if (carrinho && JSON.parse(carrinho).length > 0) {
+    contador.textContent = JSON.parse(carrinho).length;
+    contador.style.display = "inline-block";
+  } else {
+    contador.style.display = "none";
+  }
+}
 
-      // Blusas (4)
-      { id: 19, name: "Blusa Cropped Básica", price: 89.90, category: "blusas", img: "imagens/blusa01.jpg" },
-      { id: 20, name: "Blusa de Renda Feminina", price: 119.90, category: "blusas", img: "imagens/blusa01.jpg" },
-      { id: 21, name: "Blusa Social Manga Longa", price: 129.90, category: "blusas", img: "imagens/blusa01.jpg" },
-      { id: 22, name: "Blusa Estampada Boho", price: 99.90, category: "blusas", img: "imagens/blusa01.jpg" },
 
-      // Calças (4)
-      { id: 28, name: "Calca Jeans Skinny", price: 149.90, category: "calcas", img: "imagens/calca01.jpg" },
-      { id: 29, name: "Calca Social Preta", price: 179.90, category: "calcas", img: "imagens/calca01.jpg" },
-      { id: 30, name: "Calca Pantalona Floral", price: 159.90, category: "calcas", img: "imagens/calca01.jpg" },
-      { id: 31, name: "Calca Legging Preta", price: 99.90, category: "calcas", img: "imagens/calca01.jpg" }
-    ];
+// =====================================================
+// LOGIN / PERFIL
+// =====================================================
+function updateAuthAndCartButton() {
+  var user = localStorage.getItem("loggedInUser");
+  var authLink = document.getElementById("auth-link");
+  var cartButton = document.getElementById("cart-button");
 
-    function formatarMoeda(valor) {
-      var str = valor.toFixed(2);
-      var partes = str.split(".");
-      var reais = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-      var centavos = partes[1];
-      return "R$ " + reais + "," + centavos;
+  if (user) {
+    authLink.textContent = "👤 " + user + " ▼";
+    authLink.href = "#";
+    authLink.className = "profile-btn";
+
+    cartButton.style.display = "block";
+    atualizarContadorCarrinho();
+  } else {
+    authLink.textContent = "Entrar";
+    authLink.href = "login.html";
+    authLink.className = "login-trigger-btn";
+    cartButton.style.display = "none";
+  }
+}
+
+
+// =====================================================
+// MENU DROPDOWN DO PERFIL
+// =====================================================
+function setupAuthMenu() {
+  var authLink = document.getElementById("auth-link");
+  var authMenu = document.getElementById("auth-menu");
+  var logoutBtn = document.getElementById("logout-btn");
+
+  authLink.onclick = function (e) {
+    var user = localStorage.getItem("loggedInUser");
+    if (!user) return;
+    e.preventDefault();
+    authMenu.style.display = authMenu.style.display === "block" ? "none" : "block";
+  };
+
+  logoutBtn.onclick = function () {
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("loggedInUserId");
+    window.location.reload();
+  };
+
+  document.addEventListener("click", function (e) {
+    if (!document.getElementById("auth-button").contains(e.target)) {
+      authMenu.style.display = "none";
     }
+  });
+}
 
-    function renderProducts(productList) {
-      var container = document.getElementById("products-container");
-      container.innerHTML = "";
 
-      if (productList.length === 0) {
-        container.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:40px; color:#888;">Nenhum produto encontrado.</p>';
-        return;
-      }
+// =====================================================
+// INTEGRAÇÃO COM BACKEND — LISTAR PRODUTOS
+// =====================================================
+const API_PRODUTOS = "http://localhost:8080/produtos";
 
-      var i;
-      for (i = 0; i < productList.length; i = i + 1) {
-        var product = productList[i];
-        var card = document.createElement("div");
-        card.className = "product-card";
-        card.innerHTML = 
-          '<img src="' + product.img + '" alt="' + product.name + '">' +
-          '<h3>' + product.name + '</h3>' +
-          '<p class="price">' + formatarMoeda(product.price) + '</p>' +
-          '<button class="btn-view" onclick="viewProduct(' + product.id + ')">Ver detalhes</button>';
-        container.appendChild(card);
-      }
+function formatarMoeda(valor) {
+  return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+async function carregarProdutos() {
+  const container = document.getElementById("products-container");
+  container.innerHTML = "<p>Carregando produtos...</p>";
+
+  try {
+    const resposta = await fetch(API_PRODUTOS);
+    const produtos = await resposta.json();
+
+    let html = "";
+
+    produtos.forEach(p => {
+      html += `
+        <div class="product-card" data-category="${p.categoria}">
+          <img src="${p.imagem}" alt="${p.nome}">
+          <h3>${p.nome}</h3>
+          <p class="price">${formatarMoeda(p.preco)}</p>
+          <p class="short-desc">${p.descricaoCurta || ""}</p>
+          <a href="produto.html?id=${p.idProduto}" class="btn-view">Ver Produto</a>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html || "<p>Nenhum produto encontrado.</p>";
+
+  } catch (erro) {
+    container.innerHTML = "<p>Erro ao carregar produtos.</p>";
+    console.error("Erro ao buscar produtos:", erro);
+  }
+}
+
+
+// =====================================================
+// FILTRO DE CATEGORIAS
+// =====================================================
+document.getElementById("category-filter").addEventListener("change", function () {
+  let categoria = this.value;
+  let cards = document.querySelectorAll(".product-card");
+
+  cards.forEach(card => {
+    if (categoria === "all") {
+      card.style.display = "block";
+    } else {
+      card.style.display =
+        card.getAttribute("data-category") === categoria
+          ? "block"
+          : "none";
     }
+  });
+});
 
-    function filterProducts() {
-      var searchTerm = document.getElementById("search-input").value.toLowerCase();
-      var category = document.getElementById("category-filter").value;
-      var filtered = [];
-      var i;
 
-      for (i = 0; i < products.length; i = i + 1) {
-        var p = products[i];
-        var matchCategory = (category === "all" || p.category === category);
-        var matchSearch = (searchTerm === "" || p.name.toLowerCase().indexOf(searchTerm) !== -1);
-        if (matchCategory && matchSearch) {
-          filtered.push(p);
-        }
-      }
+// =====================================================
+// BUSCA POR NOME
+// =====================================================
+document.getElementById("search-input").addEventListener("input", function () {
+  let termo = this.value.toLowerCase();
+  let cards = document.querySelectorAll(".product-card");
 
-      renderProducts(filtered);
-    }
+  cards.forEach(card => {
+    let nome = card.querySelector("h3").textContent.toLowerCase();
+    card.style.display = nome.includes(termo) ? "block" : "none";
+  });
+});
 
-    function viewProduct(id) {
-      window.location.href = "produto.html?id=" + id;
-    }
 
-    function updateAuthAndCartButton() {
-      var user = localStorage.getItem("loggedInUser");
-      var authLink = document.getElementById("auth-link");
-      var cartButton = document.getElementById("cart-button");
+// =====================================================
+// INICIALIZAÇÃO DA PÁGINA
+// =====================================================
+window.onload = function () {
+  updateAuthAndCartButton();
+  setupAuthMenu();
+  carregarProdutos();
+};
+</script>
 
-      if (user) {
-        authLink.textContent = "👤 " + user;
-        authLink.href = "perfil.html";
-        authLink.className = "profile-btn";
-        cartButton.style.display = "block";
-        atualizarContadorCarrinho();
-      } else {
-        authLink.textContent = "Entrar";
-        authLink.href = "login.html";
-        authLink.className = "login-trigger-btn";
-        cartButton.style.display = "none";
-      }
-    }
-
-    function atualizarContadorCarrinho() {
-      var cart = localStorage.getItem("cart");
-      var count = 0;
-      if (cart) {
-        cart = JSON.parse(cart);
-        var i;
-        for (i = 0; i < cart.length; i = i + 1) {
-          count += cart[i].quantity;
-        }
-      }
-      document.getElementById("cart-count").textContent = count;
-    }
-
-    window.onload = function() {
-      updateAuthAndCartButton();
-      renderProducts(products);
-      document.getElementById("search-input").oninput = filterProducts;
-      document.getElementById("category-filter").onchange = filterProducts;
-    };
-  </script>
 </body>
 </html>

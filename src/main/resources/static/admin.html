@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Élan Mode — Painel Administrativo</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Layout admin */
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .admin-sidebar {
+      width: 260px;
+      background: var(--black);
+      color: white;
+      padding: 30px 20px;
+    }
+
+    .admin-sidebar h2 {
+      color: var(--pink-light);
+      margin-bottom: 20px;
+    }
+
+    .admin-sidebar a {
+      display: block;
+      padding: 12px 10px;
+      margin: 6px 0;
+      text-decoration: none;
+      color: #ccc;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .admin-sidebar a:hover,
+    .admin-sidebar a.active {
+      background: var(--pink);
+      color: white;
+    }
+
+    .admin-content {
+      flex: 1;
+      padding: 30px;
+      background: var(--light-bg);
+    }
+
+    .admin-section {
+      display: none;
+    }
+
+    .admin-section.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="admin-container">
+
+  <!-- Sidebar -->
+  <div class="admin-sidebar">
+    <h2>Élan Mode — Admin</h2>
+    <a href="#" onclick="showSection('dashboard')" class="active">📊 Dashboard</a>
+    <a href="#" onclick="showSection('produtos')">👗 Produtos</a>
+    <a href="#" onclick="showSection('fornecedores')">🏭 Fornecedores</a>
+    <a href="#" onclick="showSection('vendas')">🧾 Vendas</a>
+    <hr style="margin: 20px 0; border-color:#666;">
+    <a href="index.html">← Voltar para a Loja</a>
+  </div>
+
+  <!-- Área de conteúdo -->
+  <div class="admin-content">
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="admin-section active">
+      <h1>Dashboard</h1>
+      <p>Bem-vindo ao painel administrativo da Élan Mode!</p>
+      <p>Aqui você poderá gerenciar produtos, fornecedores e visualizar vendas.</p>
+
+      <h3 style="margin-top:20px;">Resumo rápido:</h3>
+      <ul>
+        <li id="count-produtos">Produtos: Carregando...</li>
+        <li id="count-fornecedores">Fornecedores: Carregando...</li>
+      </ul>
+    </div>
+
+    <!-- PRODUTOS -->
+    <div id="produtos" class="admin-section">
+      <h1>Gerenciar Produtos</h1>
+      <p>Crie, edite e exclua produtos.</p>
+
+      <a href="admin-produtos.html" class="btn-primary" style="margin-top:20px; display:inline-block;">
+        ➕ Adicionar / Editar Produtos
+      </a>
+    </div>
+
+    <!-- FORNECEDORES -->
+    <div id="fornecedores" class="admin-section">
+      <h1>Gerenciar Fornecedores</h1>
+      <p>Crie, edite e exclua fornecedores.</p>
+
+      <a href="admin-fornecedores.html" class="btn-primary" style="margin-top:20px; display:inline-block;">
+        ➕ Adicionar / Editar Fornecedores
+      </a>
+    </div>
+
+    <!-- VENDAS -->
+    <div id="vendas" class="admin-section">
+      <h1>Vendas</h1>
+      <p>Em breve: listagem de vendas com itens, clientes e totals.</p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // Alternar seção
+  function showSection(id) {
+    document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    document.querySelectorAll('.admin-sidebar a').forEach(a => a.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  // Carregar contadores
+  async function carregarResumo() {
+    const produtosResp = await fetch("http://localhost:8080/produtos");
+    const fornecedoresResp = await fetch("http://localhost:8080/fornecedores");
+
+    const produtos = await produtosResp.json();
+    const fornecedores = await fornecedoresResp.json();
+
+    document.getElementById("count-produtos").textContent =
+      "Produtos cadastrados: " + produtos.length;
+
+    document.getElementById("count-fornecedores").textContent =
+      "Fornecedores cadastrados: " + fornecedores.length;
+  }
+
+  carregarResumo();
+</script>
+
+</body>
+</html>
