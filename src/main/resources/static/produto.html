@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detalhes — Élan Mode</title>
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --pink: #e91e63;
+      --pink-light: #ff4081;
+      --light-bg: #f8f8f8;
+      --white: #ffffff;
+      --border-color: #e0e0e0;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
+    body {
+      background-color: var(--light-bg);
+      color: var(--black);
+    }
+    .header {
+      background-color: var(--black);
+      color: var(--white);
+      padding: 60px 20px 40px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 2.4rem;
+      color: var(--pink-light);
+    }
+    .header p {
+      margin-top: 12px;
+      color: #ccc;
+      font-size: 1.2rem;
+    }
+    .main-container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--pink);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .product-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    @media (min-width: 768px) {
+      .product-detail {
+        flex-direction: row;
+      }
+    }
+    .product-image img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .product-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-info h1 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    .price-detail {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--pink);
+      margin-bottom: 8px;
+    }
+    .price-total {
+      font-size: 1.4rem;
+      color: var(--black);
+      margin-bottom: 16px;
+    }
+    .description {
+      margin-bottom: 24px;
+      color: #555;
+      line-height: 1.6;
+    }
+    .selector-group {
+      margin-bottom: 24px;
+    }
+    .selector-group h3 {
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .sizes, .quantities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .size-btn, .qty-btn {
+      width: 50px;
+      height: 50px;
+      border: 1px solid var(--border-color);
+      background: white;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .size-btn.active, .qty-btn.active {
+      background: var(--pink);
+      color: white;
+      border-color: var(--pink);
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: var(--pink);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    .btn-cart {
+      width: 100%;
+      padding: 14px;
+      background: var(--black);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    .btn-primary:hover {
+      background: var(--pink-light);
+    }
+    .btn-cart:hover {
+      background: var(--pink);
+    }
+    #cep-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    #cep-input:focus {
+      border-color: var(--pink);
+      outline: none;
+    }
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: #aaa;
+      background: var(--black);
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>Élan Mode</h1>
+    <p>Detalhes do produto</p>
+  </header>
+
+  <main class="main-container">
+    <a href="index.html" class="back-link">← Voltar à loja</a>
+
+    <div class="product-detail">
+      <div class="product-image">
+        <img id="product-img" src="" alt="Produto" />
+      </div>
+      <div class="product-info">
+        <h1 id="product-name">Carregando...</h1>
+        <p id="product-price-unit" class="price-detail">R$ 0,00</p>
+        <p id="product-price-total" class="price-total">Total: R$ 0,00</p>
+        <p id="product-description" class="description"></p>
+
+        <div class="size-selector selector-group">
+          <h3>Tamanho</h3>
+          <div id="sizes-container" class="sizes"></div>
+          <input type="hidden" id="selected-size" value="" />
+        </div>
+
+        <div class="quantity-selector selector-group">
+          <h3>Quantidade</h3>
+          <div id="quantities-container" class="quantities"></div>
+          <input type="hidden" id="selected-quantity" value="1" />
+        </div>
+
+        <!-- ✅ Calculadora de frete -->
+        <div class="frete-calculator selector-group">
+          <h3>Calcular Frete</h3>
+          <input type="text" id="cep-input" placeholder="Digite seu CEP (ex: 01001000)" maxlength="8" />
+          <button class="btn-cart" style="background: var(--pink); color: white;" onclick="calcularFrete()">Calcular</button>
+          <p id="frete-result" style="margin-top: 12px; color: #555;"></p>
+        </div>
+
+        <button id="buy-btn" class="btn-primary" onclick="comprarProduto()">Comprar</button>
+        <button id="add-cart-btn" class="btn-cart" onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Élan Mode — Moda com impacto social.</p>
+  </footer>
+
+  <script>
+    var products = [
+      { id: 1, name: "Vestido Floral Midi", price: 189.90, category: "vestidos", img: "imagens/vestido01.jpg", desc: "Vestido midi com estampa floral, tecido leve e caimento fluido. Ideal para dias quentes." },
+      { id: 2, name: "Vestido Preto Elegante", price: 229.90, category: "vestidos", img: "imagens/vestido01.jpg", desc: "Vestido preto clássico, corte justo e mangas três quartos. Perfeito para eventos formais." },
+      { id: 3, name: "Vestido Listrado Casual", price: 159.90, category: "vestidos", img: "imagens/vestido01.jpg", desc: "Vestido listrado em tons neutros, modelagem solta e confortável para o dia a dia." },
+      { id: 4, name: "Vestido Longo em Cetim", price: 299.90, category: "vestidos", img: "imagens/vestido01.jpg", desc: "Vestido longo em cetim com brilho suave e alça fina. Destaque em festas e ocasiões especiais." },
+      { id: 10, name: "Saia Midi em Cetim", price: 129.90, category: "saias", img: "imagens/saia01.jpg", desc: "Saia midi em cetim com corte evasê. Combina com blusas básicas ou tops elegantes." },
+      { id: 11, name: "Saia Jeans com Fenda", price: 109.90, category: "saias", img: "imagens/saia01.jpg", desc: "Saia jeans versátil com fenda traseira. Estilo moderno e confortável." },
+      { id: 12, name: "Saia Lápis Preta", price: 119.90, category: "saias", img: "imagens/saia01.jpg", desc: "Saia lápis preta, modelagem justa e comprimento clássico. Ideal para escritório." },
+      { id: 13, name: "Saia Longa Estampada", price: 149.90, category: "saias", img: "imagens/saia01.jpg", desc: "Saia longa com estampa boho e amarração na cintura. Leve e feminina." },
+      { id: 19, name: "Blusa Cropped Básica", price: 89.90, category: "blusas", img: "imagens/blusa01.jpg", desc: "Blusa cropped de algodão, gola redonda e manga curta. Básico essencial do verão." },
+      { id: 20, name: "Blusa de Renda Feminina", price: 119.90, category: "blusas", img: "imagens/blusa01.jpg", desc: "Blusa em renda delicada com forro interno. Elegância para composições sofisticadas." },
+      { id: 21, name: "Blusa Social Manga Longa", price: 129.90, category: "blusas", img: "imagens/blusa01.jpg", desc: "Blusa social branca com punho ajustável. Perfeita para looks de trabalho." },
+      { id: 22, name: "Blusa Estampada Boho", price: 99.90, category: "blusas", img: "imagens/blusa01.jpg", desc: "Blusa solta com estampa étnica e mangas bufantes. Estilo livre e autêntico." },
+      { id: 28, name: "Calca Jeans Skinny", price: 149.90, category: "calcas", img: "imagens/calca01.jpg", desc: "Calca jeans skinny com elastano para maior conforto. Modelo clássico e versátil." },
+      { id: 29, name: "Calca Social Preta", price: 179.90, category: "calcas", img: "imagens/calca01.jpg", desc: "Calca social preta com corte reto e tecido de caimento impecável. Formal e elegante." },
+      { id: 30, name: "Calca Pantalona Floral", price: 159.90, category: "calcas", img: "imagens/calca01.jpg", desc: "Calca pantalona com estampa floral suave. Conforto e estilo em uma só peça." },
+      { id: 31, name: "Calca Legging Preta", price: 99.90, category: "calcas", img: "imagens/calca01.jpg", desc: "Legging preta de alta compressão, ideal para usar com túnicas ou durante atividades leves." }
+    ];
+
+    var sizeOptions = {
+      vestidos: ["PP", "P", "M", "G", "GG", "XG"],
+      saias: ["PP", "P", "M", "G", "GG", "XG"],
+      blusas: ["PP", "P", "M", "G", "GG"],
+      calcas: ["36", "38", "40", "42", "44", "46"]
+    };
+
+    // ✅ Quantidade de 1 a 4
+    var quantityOptions = [1, 2, 3, 4];
+
+    function formatarMoeda(valor) {
+      var str = valor.toFixed(2);
+      var partes = str.split(".");
+      var reais = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      var centavos = partes[1];
+      return "R$ " + reais + "," + centavos;
+    }
+
+    function renderizarTamanhos(categoria) {
+      var container = document.getElementById("sizes-container");
+      var tamanhos = sizeOptions[categoria];
+      if (!tamanhos) tamanhos = sizeOptions.vestidos;
+      container.innerHTML = "";
+      var i;
+      for (i = 0; i < tamanhos.length; i = i + 1) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "size-btn";
+        btn.textContent = tamanhos[i];
+        btn.onclick = (function(t) {
+          return function() {
+            var botoes = document.getElementsByClassName("size-btn");
+            var j;
+            for (j = 0; j < botoes.length; j = j + 1) {
+              botoes[j].classList.remove("active");
+            }
+            this.classList.add("active");
+            document.getElementById("selected-size").value = t;
+          };
+        })(tamanhos[i]);
+        container.appendChild(btn);
+      }
+    }
+
+    function renderizarQuantidades() {
+      var container = document.getElementById("quantities-container");
+      container.innerHTML = "";
+      var i;
+      for (i = 0; i < quantityOptions.length; i = i + 1) {
+        var qtd = quantityOptions[i];
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "qty-btn";
+        if (qtd === 1) btn.className += " active";
+        btn.textContent = qtd;
+        btn.onclick = (function(q) {
+          return function() {
+            var botoes = document.getElementsByClassName("qty-btn");
+            var j;
+            for (j = 0; j < botoes.length; j = j + 1) {
+              botoes[j].classList.remove("active");
+            }
+            this.classList.add("active");
+            document.getElementById("selected-quantity").value = q;
+            atualizarPrecoTotal();
+          };
+        })(qtd);
+        container.appendChild(btn);
+      }
+    }
+
+    function atualizarPrecoTotal() {
+      var url = window.location.href;
+      var id = null;
+      if (url.indexOf("?id=") !== -1) {
+        var partes = url.split("?id=");
+        if (partes[1]) id = parseInt(partes[1]);
+      }
+      if (!id) return;
+
+      var produto = null;
+      var i;
+      for (i = 0; i < products.length; i = i + 1) {
+        if (products[i].id === id) {
+          produto = products[i];
+          break;
+        }
+      }
+      if (!produto) return;
+
+      var qtd = parseInt(document.getElementById("selected-quantity").value);
+      if (isNaN(qtd)) qtd = 1;
+      var total = produto.price * qtd;
+      document.getElementById("product-price-total").textContent = "Total: " + formatarMoeda(total);
+    }
+
+    function carregarProduto() {
+      var url = window.location.href;
+      var id = null;
+      if (url.indexOf("?id=") !== -1) {
+        var partes = url.split("?id=");
+        if (partes[1]) id = parseInt(partes[1]);
+      }
+      if (!id) {
+        document.getElementById("product-name").textContent = "Produto não encontrado";
+        return;
+      }
+
+      var produto = null;
+      var i;
+      for (i = 0; i < products.length; i = i + 1) {
+        if (products[i].id === id) {
+          produto = products[i];
+          break;
+        }
+      }
+
+      if (!produto) {
+        document.getElementById("product-name").textContent = "Produto não encontrado";
+        document.getElementById("product-description").textContent = "ID inválido.";
+        return;
+      }
+
+      document.getElementById("product-name").textContent = produto.name;
+      document.getElementById("product-price-unit").textContent = formatarMoeda(produto.price);
+      document.getElementById("product-img").src = produto.img;
+      document.getElementById("product-img").alt = produto.name;
+      document.getElementById("product-description").textContent = produto.desc || "Descrição indisponível.";
+
+      renderizarTamanhos(produto.category);
+      renderizarQuantidades();
+      atualizarPrecoTotal();
+    }
+
+    function comprarProduto() {
+      var tamanho = document.getElementById("selected-size").value;
+      var quantidade = document.getElementById("selected-quantity").value || "1";
+
+      var url = window.location.href;
+      var id = null;
+      if (url.indexOf("?id=") !== -1) {
+        var partes = url.split("?id=");
+        if (partes[1]) id = parseInt(partes[1]);
+      }
+
+      if (!id) {
+        alert("Erro: produto não identificado.");
+        return;
+      }
+
+      var produto = null;
+      var i;
+      for (i = 0; i < products.length; i = i + 1) {
+        if (products[i].id === id) {
+          produto = products[i];
+          break;
+        }
+      }
+
+      if (!tamanho) {
+        alert("⚠ Por favor, selecione um tamanho.");
+        return;
+      }
+
+      var total = produto.price * parseInt(quantidade);
+      var compra = {
+        id: produto.id,
+        name: produto.name,
+        size: tamanho,
+        quantity: parseInt(quantidade),
+        unitPrice: produto.price,
+        totalPrice: total
+      };
+
+      localStorage.setItem("pedidoAtual", JSON.stringify(compra));
+      window.location.href = "area-compra.html";
+    }
+
+    function adicionarAoCarrinho() {
+      var user = localStorage.getItem("loggedInUser");
+      if (!user) {
+        alert("⚠ Faça login para adicionar itens ao carrinho.");
+        return;
+      }
+
+      var tamanho = document.getElementById("selected-size").value;
+      var quantidade = document.getElementById("selected-quantity").value || "1";
+
+      if (!tamanho) {
+        alert("⚠ Por favor, selecione um tamanho.");
+        return;
+      }
+
+      var url = window.location.href;
+      var id = null;
+      if (url.indexOf("?id=") !== -1) {
+        var partes = url.split("?id=");
+        if (partes[1]) id = parseInt(partes[1]);
+      }
+
+      var produto = null;
+      var i;
+      for (i = 0; i < products.length; i = i + 1) {
+        if (products[i].id === id) {
+          produto = products[i];
+          break;
+        }
+      }
+
+      if (!produto) {
+        alert("Produto não encontrado.");
+        return;
+      }
+
+      var total = produto.price * parseInt(quantidade);
+      var item = {
+        id: produto.id,
+        name: produto.name,
+        size: tamanho,
+        quantity: parseInt(quantidade),
+        unitPrice: produto.price,
+        totalPrice: total
+      };
+
+      var cart = localStorage.getItem("cart");
+      if (cart) {
+        cart = JSON.parse(cart);
+      } else {
+        cart = [];
+      }
+      cart.push(item);
+      localStorage.setItem("cart", JSON.stringify(cart));
+
+      alert("✅ Adicionado ao carrinho!");
+    }
+
+    // ✅ Função de cálculo de frete
+    function calcularFrete() {
+      var cepInput = document.getElementById("cep-input").value;
+      var cep = cepInput.replace(/\D/g, "");
+
+      if (cep.length !== 8) {
+        document.getElementById("frete-result").innerHTML = "⚠ CEP inválido. Digite 8 dígitos.";
+        return;
+      }
+
+      var distancia = 500;
+      var regiao = "Brasil";
+      var prefixo = parseInt(cep.substring(0, 2));
+
+      if (prefixo >= 79 && prefixo <= 79) {
+        distancia = 0;
+        regiao = "Mato Grosso do Sul";
+      } else if (prefixo >= 78 && prefixo <= 78) {
+        distancia = 300;
+        regiao = "Mato Grosso";
+      } else if (prefixo >= 10 && prefixo <= 19) {
+        distancia = 900;
+        regiao = "São Paulo";
+      } else if (prefixo >= 20 && prefixo <= 28) {
+        distancia = 1200;
+        regiao = "Rio de Janeiro / Espírito Santo";
+      } else if (prefixo >= 30 && prefixo <= 39) {
+        distancia = 1100;
+        regiao = "Minas Gerais";
+      } else if (prefixo >= 40 && prefixo <= 49) {
+        distancia = 1800;
+        regiao = "Nordeste (BA, SE, AL, PE...)";
+      } else if (prefixo >= 50 && prefixo <= 59) {
+        distancia = 2000;
+        regiao = "Nordeste (PE, PB, RN...)";
+      } else if (prefixo >= 60 && prefixo <= 69) {
+        distancia = 2200;
+        regiao = "Norte / Nordeste (CE, PI, MA, PA...)";
+      } else if (prefixo >= 80 && prefixo <= 87) {
+        distancia = 800;
+        regiao = "Sul (PR, SC)";
+      } else if (prefixo >= 90 && prefixo <= 99) {
+        distancia = 1000;
+        regiao = "Rio Grande do Sul";
+      } else {
+        distancia = 1500;
+      }
+
+      var tempoHoras = distancia / 80;
+      var dias = Math.ceil(tempoHoras / 24);
+
+      var resultado = "";
+      if (distancia === 0) {
+        resultado = "<strong>🚚 Frete Grátis!</strong><br>Entrega em Aparecida do Taboado (MS) em até 1 dia útil.";
+      } else {
+        resultado = "<strong>🚚 Frete Grátis!</strong><br>" +
+                    "Destino: " + regiao + "<br>" +
+                    "Distância estimada: " + distancia + " km<br>" +
+                    "Tempo de entrega: até " + dias + " dias úteis";
+      }
+
+      document.getElementById("frete-result").innerHTML = resultado;
+    }
+
+    window.onload = carregarProduto;
+  </script>
+</body>
+</html>
