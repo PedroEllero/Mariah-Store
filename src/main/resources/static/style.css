@@ -62,7 +62,7 @@ h2 {
 .header {
   background: var(--black-deep);
   color: var(--white);
-  padding: 72px 20px 50px;
+  padding: 52px 20px 50px;
   text-align: center;
   position: sticky;
   top: 0;
@@ -137,6 +137,17 @@ h2 {
   z-index: 2000;
 }
 
+.back-btn {
+  position:fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 3000;
+    color: white;
+  font-size: 1.1rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
 .login-trigger-btn,
 .profile-btn,
 .cart-btn {
@@ -203,7 +214,8 @@ h2 {
 
 
 
-.auth-menu {
+.auth-menu,
+.auth-button {
   display: none;
   position: absolute;
   top: 48px;
@@ -749,8 +761,10 @@ h2 {
 
   .auth-container,
   #cart-button {
+    position: fixed;
     top: 16px;
-    right: 16px;
+    left: 16px;
+    z-index: 2000;
   }
 }
 

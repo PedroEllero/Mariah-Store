@@ -9,24 +9,31 @@
 </head>
 
 <body>
-
-  <div id="toast" class="toast"></div>
-
-  
-  <div class="top-nav">
-    <a href="index.html" class="nav-btn">← Voltar</a>
-
-    <div class="nav-right">
-      <a href="carrinho.html" class="nav-icon">🛒</a>
-      <a href="perfil.html" class="nav-icon">👤</a>
-    </div>
-  </div>
-
- 
   <header class="header">
     <h1>Mariah store</h1>
     <p>Detalhes do produto</p>
   </header>
+
+  <div id="toast" class="toast"></div>
+
+  
+    <div class="header-top">
+
+      
+      
+      <div id="auth-button" class="auth-container">
+         <a href="index.html" class="back-btn">← Voltar</a>
+
+         <div class="top-right-group">
+           
+           <div id="cart-button">
+             <a href="carrinho.html" class="cart-btn">
+               🛒 <span id="cart-count">0</span>
+              </a>
+            </div>
+          </div>
+        </div>
+ 
 
   
   <main class="main-container">
@@ -229,6 +236,7 @@ function adicionarAoCarrinho() {
   localStorage.setItem("cart", JSON.stringify(cart));
 
   showToast("Adicionado ao carrinho!");
+  alert("✅ Produto adicionado ao carrinho.");
 }
 
 

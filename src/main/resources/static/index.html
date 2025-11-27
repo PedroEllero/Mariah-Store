@@ -6,30 +6,45 @@
   <title> Mariah store — Loja de Roupas</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body style="
+  /* fallback */
+  background-color: var(--off-white);
 
+  /* banner atrás de tudo + overlay */
+  background-image: linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)), url('/imagens/banner.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+">
 
-  <div id="auth-button" class="auth-container">
-    <a href="login.html" id="auth-link" class="login-trigger-btn">Entrar</a>
+<header class="header">
+  <h1>Mariah store</h1>
+  <p>Elegância, atitude e propósito em cada peça.</p>
+</header>
 
-    <div id="auth-menu" class="auth-menu">
-      <a href="perfil.html">Meu Perfil</a>
-      <a href="perfil.html#pedidos">Meus Pedidos</a>
-      <button id="logout-btn" class="logout-drop">Sair</button>
-    </div>
+<div id="auth-button" class="auth-container">
+  <div class="header-top">
+
+             <div id="cart-button">
+               <a href="carrinho.html" class="cart-btn">
+                 🛒 <span id="cart-count">0</span>
+                </a>
+              </div>
+            </div>
+  <a href="login.html" id="auth-link" class="login-trigger-btn">Entrar</a>
+  
+  <div id="auth-menu" class="auth-menu">
+    <a href="perfil.html">Meu Perfil</a>
+    <a href="perfil.html#pedidos">Meus Pedidos</a>
+    <button id="logout-btn" class="logout-drop">Sair</button>
   </div>
+</div>
 
- 
-  <div id="cart-button">
-    <a href="carrinho.html" class="cart-btn">
-      🛒 <span id="cart-count">0</span>
-    </a>
-  </div>
+  
+  
 
-  <header class="header">
-    <h1>Mariah store</h1>
-    <p>Elegância, atitude e propósito em cada peça.</p>
-  </header>
 
   <div class="main-container">
 
