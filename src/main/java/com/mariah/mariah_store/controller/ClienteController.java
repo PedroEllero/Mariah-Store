@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.mariah.mariah_store.auth.JwtUtil;
+import com.mariah.mariah_store.dto.ClienteRequest;
 import com.mariah.mariah_store.dto.ClienteResponse;
 import com.mariah.mariah_store.dto.ClienteUpdateDTO;
 import com.mariah.mariah_store.dto.LoginRequest;
@@ -32,10 +33,9 @@ public class ClienteController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<ClienteModel> criar(@Valid @RequestBody ClienteModel cliente) {
-        ClienteModel salvo = service.criarCliente(cliente);
-        URI location = URI.create("/clientes/" + salvo.getId());
-        return ResponseEntity.created(location).body(salvo);
+    public ResponseEntity<Void> criar(@Valid @RequestBody ClienteRequest request) {
+        service.criarCliente(request);
+        return ResponseEntity.noContent().build();
     }
 
     // READ ALL
