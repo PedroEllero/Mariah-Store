@@ -74,8 +74,7 @@ public class ProdutoService {
     }
 
     public ProdutoModel buscarPorId(Long id) {
-        return produtoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Produto com id " + id + " não encontrado."));
+        return produtoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Produto com id " + id + " não encontrado."));
     }
 
     public ProdutoModel atualizar(Long id, ProdutoModel dadosAtualizados) {

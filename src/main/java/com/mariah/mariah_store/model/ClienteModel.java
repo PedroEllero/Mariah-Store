@@ -2,6 +2,11 @@ package com.mariah.mariah_store.model;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.mariah.mariah_store.dto.ClienteRequest;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -15,8 +20,14 @@ import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClienteModel {
 
     @Id
@@ -51,55 +62,15 @@ public class ClienteModel {
     @Column(name = "role")
     private Set<String> roles;
 
-    // GETTERS E SETTERS
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-    public void setNome(String nome) {
-        this.nome = nome;
+    
+    public ClienteModel(ClienteRequest request, PasswordEncoder passwordEncoder) {
+        this.nome = request.nome();
+        this.email = request.email();
+        this.telefone = request.telefone();
+        this.senha = passwordEncoder.encode(request.senha());
+        this.roles = Set.of("ROLE_USER");
+        this.dataCadastro = LocalDateTime.now();
     }
 
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public LocalDateTime getDataCadastro() {
-        return dataCadastro;
-    }
-    public void setDataCadastro(LocalDateTime dataCadastro) {
-        this.dataCadastro = dataCadastro;
-    }
-
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
+   
 }
